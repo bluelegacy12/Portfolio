@@ -9,4 +9,4 @@ EDIT: The game now supports more resolutions! Yay! Smaller resolutions than 1080
 
 UPDATE: The game supports up to four players! But you have to crowd around the keyboard.
 
-NOTE: This game is not in 3D it just uses a 3D core cause that's what I was following along with in my research to getting started in Unity.
+NOTE: This game is not in 3D it just uses a 3D core - I played around a lot with my first Unity project.

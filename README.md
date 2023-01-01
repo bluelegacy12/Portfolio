@@ -1,6 +1,6 @@
 Portfolio
 
 Unity Projects:
-Uno
-Cat-Tastrophy!
+Uno,
+Cat-Tastrophy!,
 Sight Reader Dojo

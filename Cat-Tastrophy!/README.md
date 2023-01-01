@@ -6,3 +6,6 @@ It supports mouse and keyboard, and controller inputs. The android version suppo
 The browser based version can be found here: https://play.unity.com/mg/other/webgl-builds-268380
 
 Instructions and controls can be found in game.
+
+Use the .zip file for the desktop version (just extract the zip file and click the .exe file within it) 
+and for androids, the .apk file can be downloaded directly to your android device.

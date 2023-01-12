@@ -1,6 +1,6 @@
 # Portfolio
 
-# Unity Projects:
+# Unity Projects
 Uno: A 2D card game
 
 Cat-Tastrophy!: A 3D game of cat and mouse

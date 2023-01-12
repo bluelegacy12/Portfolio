@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+    web:
+        build: theater/.
+        command: "gunicorn --worker-tmp-dir /dev/shm --workers 2 --threads 4 --worker-class gthread --bind 0.0.0.0:5000 wsgi:app"
+        restart: always
+        ports: 
+            - 5000:5000
+        depends_on:
+            - pg     
+    pg:
+        container_name: pg_container
+        image: postgres:14.1-alpine3.15
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_HOST_AUTH_METHOD: trust
+            PGUSER: postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./data:/var/lib/postgresql/data
+
+    # pgadmin:
+    #     container_name: pgadmin_container
+    #     image: dpage/pgadmin4:6.4
+    #     restart: always
+    #     environment:
+    #         PGADMIN_DEFAULT_EMAIL: admin@example.com
+    #         PGADMIN_DEFAULT_PASSWORD: admin123
+    #         PGADMIN_LISTEN_PORT: 5433
+    #         PGADMIN_CONFIG_SERVER_MODE: "False"
+    #         PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    #         PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: "False"
+    #     ports:
+    #         - "5433:5433"
+    #     depends_on:
+    #         - pg
+    #     volumes:
+    #         - pgadmin_volume:/var/lib/pgadmin
+# volumes:
+#     pgadmin_volume:
+#         driver: local
+
+

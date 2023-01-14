@@ -1,11 +1,15 @@
 from django.db import models
 import datetime
+from django.urls import reverse
 
 # Create your models here.
 class Performers(models.Model):
     name = models.CharField(max_length=128, unique=True, null=False)
     email = models.CharField(max_length=128, unique=True, null=False)
     phone = models.CharField(max_length=10, unique=True, null=False)
+
+    def get_absolute_url(self):
+        return reverse('getdata:home', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name + ', ' + self.email + ', ' + self.phone

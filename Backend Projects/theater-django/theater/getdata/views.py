@@ -3,6 +3,7 @@ from .forms import NameForm, UserForm
 from .models import Performers, Shows, Roles
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -100,3 +101,7 @@ class UserFormView(View):
                     login(request, user)
                     return redirect('getdata:home')
         return render(request, self.template_name, {'form': form})
+
+class PerformerCreate(CreateView):
+    model = Performers
+    fields = ['name', 'email', 'phone']

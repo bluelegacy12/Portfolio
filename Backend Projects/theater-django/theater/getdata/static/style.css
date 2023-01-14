@@ -2,3 +2,7 @@ body{
     background: white url("images/bluebackground.png");
     background-size: cover;
 }
+
+.navbar{
+    border-radius: 0px;
+}

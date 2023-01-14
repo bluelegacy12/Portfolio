@@ -1,40 +1,26 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-<html>
-    <!-- <nav class="navbar">
-        <div class="container-fluid">
-            <div class="navbar-header"></div>
-        </div>
-    </nav> -->
-    <body>
-        <h1>Theater Scheduler</h1>
-        <form action="/getdata/home/" method="post">
-            {% csrf_token %}
-            <h2>Add Cast Member</h2>
-            {{ form }}
-            <input type="submit" value="Submit">
-        </form>
+{% extends 'base.html' %}
+{% block body %}
 
-        <h1>Cast</h1>
-        <ul>{% for s in all_shows %}
-            <form action="{% url 'getdata:favorite' s.id %}" method="post">
-                {% csrf_token %}
-                <h3><input type="checkbox" id="show{{ forloop.counter }}" name="show" value="{{ s.id }}"/>
-                <label for="show{{ forloop.counter }}">
-                <u><i>{{ s.title }}</i></u>
-                {% if s.favorite %}
-                    <img src="http://i.imgur.com/b9b13Rd.png" width="15"/>
-                {% else %}
-                    <img src="https://pic.onlinewebfonts.com/svg/img_251809.png" width="15"/>
-                {% endif %}</h3>
-               <!--  </label> -->
-                {% for role in all_roles %}
-                    <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
-                {% endfor %}
-            {% endfor %}
-            <br>
-            <input type="submit" value="Add to Favorites">
-        </form>
-        </ul>
-    </body>
-</html>
+<h1>Theater Scheduler</h1>
+<h2>Cast</h2>
+<ul>{% for s in all_shows %}
+    <form action="{% url 'getdata:favorite' s.id %}" method="post">
+        {% csrf_token %}
+        <h3><input type="checkbox" id="show{{ forloop.counter }}" name="show" value="{{ s.id }}"/>
+        <label for="show{{ forloop.counter }}">
+        <u><i>{{ s.title }}</i></u>
+        {% if s.favorite %}
+            <img src="http://i.imgur.com/b9b13Rd.png" width="15"/>
+        {% else %}
+            <img src="https://pic.onlinewebfonts.com/svg/img_251809.png" width="15"/>
+        {% endif %}</h3>
+        <!--  </label> -->
+        {% for role in all_roles %}
+            <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
+        {% endfor %}
+    {% endfor %}
+    <br>
+    <input type="submit" value="Add to Favorites">
+</form>
+</ul>
+    {% endblock %}

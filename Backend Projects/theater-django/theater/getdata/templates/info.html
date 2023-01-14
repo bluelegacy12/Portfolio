@@ -1,5 +1,8 @@
 <html>
     <body>
+        {% if error_message %}
+            <h1>{{ error_message }}</h1>
+        {% endif %}
         <h1>ID: {{ performer_id }}</h1>
         <h2>
             Name: {{ performer.name }} <br>

@@ -16,6 +16,7 @@ class Shows(models.Model):
     rehearsal_start = models.DateTimeField(null=False)
     show_open = models.DateTimeField(null=False)
     director_id = models.ForeignKey(Performers, on_delete=models.CASCADE)
+    favorite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title + " - directed by: " + self.director_id.name + " - opens: " + str(self.show_open)

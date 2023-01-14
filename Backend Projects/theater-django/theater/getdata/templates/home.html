@@ -9,9 +9,11 @@
         </form>
 
         <h1>Cast</h1>
-        <ul>
-            {% for performer in all_performers %}
-            <li><a href="/getdata/info/{{ performer.id }}/">{{ performer.name }}</a></li>
+        <ul>{% for s in all_shows %}
+                <h3><u><i>{{ s.title }}</i></u></h3>
+                {% for role in all_roles %}
+                    <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
+                {% endfor %}
             {% endfor %}
         </ul>
     </body>

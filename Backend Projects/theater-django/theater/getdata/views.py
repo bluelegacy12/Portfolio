@@ -1,22 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .forms import NameForm
-from .models import Performers
-from django.http import Http404
+from .models import Performers, Shows, Roles
 
 
 all_performers = Performers.objects.all()
+all_shows = Shows.objects.all()
+all_roles = Roles.objects.all()
 
 def info(request, performer_id):
-    try:
-        p = Performers.objects.get(pk=performer_id)
-    except Performers.DoesNotExist:
-        raise Http404("Performer does not exist")
+    p = get_object_or_404(Performers, pk=performer_id)
     performer = all_performers[int(performer_id) - 1] # all_performers is zero indexed, sql pks are not. Must subtract 1 from index
-    
     context = {
         'all_performers': all_performers,
         'performer_id': performer_id,
-        'performer': performer
+        'performer': performer,
     }
     return render(request, 'info.html', context)
 
@@ -46,6 +43,8 @@ def home(request):
         form = NameForm()
         context = {
             'all_performers': all_performers,
-            'form': form
+            'form': form,
+            'all_roles': all_roles,
+            'all_shows': all_shows,
         }   
     return render(request, 'home.html', context)

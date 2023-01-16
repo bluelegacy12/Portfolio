@@ -9,7 +9,7 @@ class Performers(models.Model):
     phone = models.CharField(max_length=10, unique=True, null=False)
 
     def get_absolute_url(self):
-        return reverse('getdata:home', kwargs={'pk': self.pk})
+        return reverse('getdata:info', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name + ', ' + self.email + ', ' + self.phone
@@ -22,6 +22,9 @@ class Shows(models.Model):
     director_id = models.ForeignKey(Performers, on_delete=models.CASCADE)
     favorite = models.BooleanField(default=False)
 
+    def get_absolute_url(self):
+            return reverse('getdata:showinfo', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.title + " - directed by: " + self.director_id.name + " - opens: " + str(self.show_open)
 
@@ -30,6 +33,9 @@ class Roles(models.Model):
     name = models.CharField(max_length=128, null=False)
     show_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
     performer_id = models.ForeignKey(Performers, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+            return reverse('getdata:roleinfo', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name + " - from: " + self.show_id.title + " - performer: " + self.performer_id.name

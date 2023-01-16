@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}
+<h1>ID: {{ object.id }}</h1>
+<h2>
+    <u>Title:</u> {{ object.title }} <br><br>
+    <u>Rehearsal Start Date:</u> {{ object.rehearsal_start }} <br><br>
+<u>Show Opens:</u> {{ object.show_open }}<br><br>
+<u>Director:</u> {{ object.director_id.name }}
+</h2>
+{% endblock %}

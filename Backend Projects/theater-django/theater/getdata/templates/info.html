@@ -7,6 +7,24 @@
 <h2>
 <u>Name:</u> {{ object.name }} <br><br>
 <u>Email:</u> {{ object.email }} <br><br>
-<u>Phone:</u> {{ object.phone }}
-</h2>
+<u>Phone:</u> {{ object.phone }}<br><br>
+<u>Roles:</u> {{ roles }}
+{% for role in object.roles_set.all %}
+    <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i> /
+{% endfor %}
+</h2><br><br>
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' object.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="performer_id" value="{{ object.id }}">&nbsp;
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-wrench"></span>
+    </button>&nbsp;
+</form>&nbsp;
+<form style="display: inline" action="{% url 'getdata:performer-delete' object.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="performer_id" value="{{ object.id }}">
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-trash"></span>
+    </button>
+</form>
 {% endblock %}

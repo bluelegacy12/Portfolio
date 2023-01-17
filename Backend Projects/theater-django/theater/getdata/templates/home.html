@@ -5,7 +5,7 @@
 <h2>Shows</h2>
 <ul>{% for show in object_list %}
         {% csrf_token %}
-        <h3><u><i>{{ show.title }}</i></u>  - {{ show.show_open }}</h3>
+        <h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
         {% for role in show.roles_set.all %}
             <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
         {% endfor %}

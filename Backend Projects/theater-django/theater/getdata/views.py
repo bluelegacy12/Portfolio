@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.urls import reverse_lazy
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -71,3 +72,33 @@ class ShowInfoView(generic.DetailView):
 class RoleInfoView(generic.DetailView):
     model = Roles
     template_name = 'roleinfo.html'
+
+class PerformerUpdate(UpdateView):
+    model = Performers
+    fields = ['name', 'email', 'phone']
+    template_name = 'create_form.html'
+
+class PerformerDelete(DeleteView):
+    model = Performers
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:home')
+
+class ShowUpdate(UpdateView):
+    model = Shows
+    fields = ['title', 'rehearsal_start', 'show_open', 'director_id']
+    template_name = 'create_form.html'
+
+class ShowDelete(DeleteView):
+    model = Shows
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:home')
+
+class RoleUpdate(UpdateView):
+    model = Roles
+    fields = ['name', 'show_id', 'performer_id']
+    template_name = 'create_form.html'
+
+class RoleDelete(DeleteView):
+    model = Roles
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:home')

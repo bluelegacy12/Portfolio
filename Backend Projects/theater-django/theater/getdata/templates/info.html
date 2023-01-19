@@ -3,14 +3,15 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>ID: {{ object.id }}</h1>
+<h1>ID : {{ object.id }}</h1>
 <h2>
-<u>Name:</u> {{ object.name }} <br><br>
-<u>Email:</u> {{ object.email }} <br><br>
-<u>Phone:</u> {{ object.phone }}<br><br>
-<u>Roles:</u> {{ roles }}
+<u>Name</u>: {{ object.name }} <br><br>
+<u>Email</u>: {{ object.email }} <br><br>
+<u>Phone</u>: {{ object.phone }}<br><br>
+{% if object.roles_set.all.count > 0 %}
+<u>Roles</u>
 {% for role in object.roles_set.all %}
-    <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i> /
+    : <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i> 
 {% endfor %}
 </h2><br><br>
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' object.id %}">
@@ -27,4 +28,5 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 {% endblock %}

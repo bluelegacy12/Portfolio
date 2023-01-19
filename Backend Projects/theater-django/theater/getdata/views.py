@@ -106,7 +106,7 @@ class RoleDelete(DeleteView):
 class CallCreate(CreateView):
     model = CallTime
     template_name = 'create_form.html'
-    fields = ['show_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+    fields = ['show_id_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
 
 class CallInfoView(generic.DetailView):
     model = CallTime

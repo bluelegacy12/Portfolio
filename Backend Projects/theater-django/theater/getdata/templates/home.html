@@ -3,6 +3,7 @@
 
 <h1>Theater Scheduler</h1>
 <h2>Shows</h2>
+{% if object_list.count > 0 %}
 <ul>{% for show in object_list %}
         {% csrf_token %}
         <h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
@@ -12,4 +13,5 @@
         <a href="{% url 'getdata:role-add' %}">+ Add Role</a>
     {% endfor %}
 </ul>
+{% endif %}
 {% endblock %}

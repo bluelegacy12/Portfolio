@@ -17,10 +17,9 @@ class Performers(models.Model):
 
 class Shows(models.Model):
     title = models.CharField(max_length=128, unique=True, null=False)
-    rehearsal_start = models.DateTimeField(null=False)
-    show_open = models.DateTimeField(null=False)
+    rehearsal_start = models.DateField(null=False)
+    show_open = models.DateField(null=False)
     director_id = models.ForeignKey(Performers, on_delete=models.SET_DEFAULT, default="")
-    favorite = models.BooleanField(default=False)
 
     def get_absolute_url(self):
             return reverse('getdata:showinfo', kwargs={'pk': self.pk})
@@ -38,13 +37,13 @@ class Roles(models.Model):
             return reverse('getdata:roleinfo', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return self.name + " - from: " + self.show_id.title + " - performer: " + self.performer.name
+        return self.name + " - from: " + self.show_id.title + " - performer: " + self.performer_id.name
 
 
 class Scenes(models.Model):
     scene_name = models.CharField(max_length=128, unique=True, null=False)
     show_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
-    role_id = models.ManyToManyField(Roles)
+    role = models.ManyToManyField(Roles)
 
 
 class RehearsalVenues(models.Model):
@@ -54,14 +53,15 @@ class RehearsalVenues(models.Model):
 
 
 class Conflicts(models.Model):
-    date_time = models.DateTimeField()
-    endtime = models.DateTimeField(default='')
     performer_id = models.ManyToManyField(Performers)
+    date_time = models.DateTimeField(null=False)
+    endtime = models.DateTimeField(null=False)
+    
 
 class CallTime(models.Model):
-    show_id = models.ForeignKey(Shows, on_delete=models.CASCADE, default="")
+    show_id_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
     date = models.DateField(null=False)
-    start_time = models.TimeField(null=False, default='')
+    start_time = models.TimeField(null=False)
     end_time = models.TimeField(null=False)
     performers = models.ManyToManyField(Performers)
     notes = models.TextField(null=True, blank=True)

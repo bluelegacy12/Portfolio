@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}
+<h1>{{ object.show_id.title }} {{ object.date }}</h1>
+{% for call in CallTime.object.all %}
+{% if call.date == object.date %}
+<h2></h2>{{ call.starttime }} - {{ call.endtime }}</h2><br>
+Cast Called: {{ call.performers }}
+{% if call.notes not null %}Notes: {{ call.notes }}{% endif %}
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="call_id" value="{{ call.id }}">&nbsp;
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-wrench"></span>
+    </button>&nbsp;
+</form>&nbsp;
+<form style="display: inline" action="{% url 'getdata:call-delete' call.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="call_id" value="{{ call.id }}">
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-trash"></span>
+    </button>
+</form>
+{% endif %}
+{% endfor %}
+{% endblock %}

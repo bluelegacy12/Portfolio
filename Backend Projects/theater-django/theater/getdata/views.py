@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import NameForm, UserForm
-from .models import Performers, Shows, Roles
+from .models import Performers, Shows, Roles, CallTime
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.views import generic
@@ -102,3 +102,12 @@ class RoleDelete(DeleteView):
     model = Roles
     template_name = 'delete_confirm.html'
     success_url = reverse_lazy('getdata:home')
+
+class CallCreate(CreateView):
+    model = CallTime
+    template_name = 'create_form.html'
+    fields = ['show_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+
+class CallInfoView(generic.DetailView):
+    model = CallTime
+    template_name = 'callinfo.html'

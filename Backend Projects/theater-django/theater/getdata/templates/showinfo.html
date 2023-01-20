@@ -29,7 +29,7 @@
 <h2><u>Daily Schedules</u></h2>
 {% for date in object.calltime_set.all %}
 {% ifchanged date.date %}
-<a href="{% url 'getdata:callinfo' date.id %}">{{ date.date }}</a>
+<a href="{% url 'getdata:callinfo' date.id %}">{{ date.date }}</a>,
 {% endifchanged %}
 {% endfor %}
 {% endif %}

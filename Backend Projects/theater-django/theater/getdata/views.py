@@ -111,3 +111,8 @@ class CallCreate(CreateView):
 class CallInfoView(generic.DetailView):
     model = CallTime
     template_name = 'callinfo.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CallInfoView, self).get_context_data(**kwargs)
+        context['calltimes'] = CallTime.objects.all()
+        return context

@@ -3,6 +3,8 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
+<div style="display: flexbox;">
+<div style="float: left; width: 50%;">
 <h1>ID: {{ object.id }}</h1>
 <h2>
     <u>Title:</u> {{ object.title }} <br><br>
@@ -11,6 +13,14 @@
 <u>Director:</u> {{ object.director_id.name }}
 </h2>
 <br>
+{% if object.calltime_set.all.count > 0 %}
+<h2><u>Daily Schedules</u></h2>
+{% for date in object.calltime_set.all %}
+{% ifchanged date.date %}
+<a href="{% url 'getdata:callinfo' date.id %}">{{ date.date }}</a>{% if date.date != object.calltime_set.all.last.date %},{% endif %}
+{% endifchanged %}
+{% endfor %}
+<br><br>
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:show-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
@@ -25,13 +35,8 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
-{% if object.calltime_set.all.count > 0 %}
-<h2><u>Daily Schedules</u></h2>
-{% for date in object.calltime_set.all %}
-{% ifchanged date.date %}
-<a href="{% url 'getdata:callinfo' date.id %}">{{ date.date }}</a>,
-{% endifchanged %}
-{% endfor %}
+</div>
+<div style="float: left; width: 50%; padding-left: 15px; border-left: 2px solid;">
 <h2><u>Most Recent Schedule:</u></h2>
 <h3>{{ object.calltime_set.all.last.date }}</h3>
 {% for call in object.calltime_set.all %}
@@ -42,6 +47,23 @@ Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endf
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}
 {% endif %}
 {% endfor %}
+{% else %}
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:show-update' object.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-wrench"></span>
+    </button>&nbsp;
+</form>&nbsp;
+<form style="display: inline" action="{% url 'getdata:show-delete' object.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="show_id" value="{{ object.id }}">
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-trash"></span>
+    </button>
+</form>
 {% endif %}
 <br>
+</div>
+</div>
 {% endblock %}

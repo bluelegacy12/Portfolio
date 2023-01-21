@@ -3,17 +3,20 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>ID : {{ object.id }}</h1>
+<div style="display: flexbox;">
+<div style="float: left; width: 50%;">
+<h1>ID: {{ object.id }}</h1>
 <h2>
 <u>Name</u>: {{ object.name }} <br><br>
 <u>Email</u>: {{ object.email }} <br><br>
 <u>Phone</u>: {{ object.phone }}<br><br>
 {% if object.roles_set.all.count > 0 %}
-<u>Roles</u>
+<u>Roles:</u>
 {% for role in object.roles_set.all %}
-    : <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i> 
+    <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i>{% if role != object.roles_set.all.last %},{% endif %}
 {% endfor %}
 </h2><br><br>
+{% endif %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="performer_id" value="{{ object.id }}">&nbsp;
@@ -28,18 +31,22 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
-{% endif %}
-<h2><u>Most Recent Schedule:</u></h2>
-<h3>{{ calltimes.last.date }}</h3>
-<ul>
+</div>
+<div style="float: left; width: 50%; padding-left: 15px; border-left: 2px solid;">
+<h2><u> Most Recent Schedule:</u></h2>
+<h3> {{ calltimes.last.date }}</h3>
+<h4><ul>
 {% for call in calltimes %}
 {% for p in call.performers.all %}
 {% if call.date == calltimes.last.date and p == object %}
-<li>{{ call.show_id_id.title }}:
+<br><li>{{ call.show_id_id.title }}:
 {{ call.start_time }} - {{ call.end_time }}
-{% if call.notes %} Notes: {{ call.notes }} {% endif %}</li>
+{% if call.notes %} - Notes: {{ call.notes }} {% endif %}</li>
 {% endif %}
 {% endfor %}
 {% endfor %}
-</ul>
+</ul></h4>
+ <h3><a href="{% url 'getdata:callinfo' calltimes.last.id %}">See full schedule</a></h3>
+</div>
+</div>
 {% endblock %}

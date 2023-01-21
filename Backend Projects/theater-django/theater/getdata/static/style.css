@@ -14,5 +14,6 @@ body{
 }
 
 .column {
-    flex: 20%;
+    float: left;
+    width: 50%;
 }

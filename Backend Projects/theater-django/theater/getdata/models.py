@@ -70,4 +70,4 @@ class CallTime(models.Model):
             return reverse('getdata:callinfo', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return str(self.date) + " - " + str(self.start_time)
+        return str(self.date) + ": " + str(self.start_time)  + " - " + str(self.end_time)

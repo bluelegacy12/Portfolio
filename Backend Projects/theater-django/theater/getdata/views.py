@@ -65,6 +65,11 @@ class InfoView(generic.DetailView):
     model = Performers
     template_name = 'info.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(InfoView, self).get_context_data(**kwargs)
+        context['calltimes'] = CallTime.objects.all()
+        return context
+
 class ShowInfoView(generic.DetailView):
     model = Shows
     template_name = 'showinfo.html'
@@ -116,3 +121,13 @@ class CallInfoView(generic.DetailView):
         context = super(CallInfoView, self).get_context_data(**kwargs)
         context['calltimes'] = CallTime.objects.all()
         return context
+
+class CallUpdate(UpdateView):
+    model = CallTime
+    fields = ['show_id_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+    template_name = 'create_form.html'
+
+class CallDelete(DeleteView):
+    model = CallTime
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:home')

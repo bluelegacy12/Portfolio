@@ -1,8 +1,18 @@
 body{
     background: white url("images/bluebackground.png");
     background-size: cover;
+    text-align: center;
 }
 
 .navbar{
     border-radius: 0px;
+}
+
+.row {
+    display: flex;
+    padding-left: 10%;
+}
+
+.column {
+    flex: 20%;
 }

@@ -29,4 +29,17 @@
     </button>
 </form>
 {% endif %}
+<h2><u>Most Recent Schedule:</u></h2>
+<h3>{{ calltimes.last.date }}</h3>
+<ul>
+{% for call in calltimes %}
+{% for p in call.performers.all %}
+{% if call.date == calltimes.last.date and p == object %}
+<li>{{ call.show_id_id.title }}:
+{{ call.start_time }} - {{ call.end_time }}
+{% if call.notes %} Notes: {{ call.notes }} {% endif %}</li>
+{% endif %}
+{% endfor %}
+{% endfor %}
+</ul>
 {% endblock %}

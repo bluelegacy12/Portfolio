@@ -32,5 +32,16 @@
 <a href="{% url 'getdata:callinfo' date.id %}">{{ date.date }}</a>,
 {% endifchanged %}
 {% endfor %}
+<h2><u>Most Recent Schedule:</u></h2>
+<h3>{{ object.calltime_set.all.last.date }}</h3>
+{% for call in object.calltime_set.all %}
+{% if call.date == object.calltime_set.all.last.date %}
+<hr>
+<h3>{{ call.start_time }} - {{ call.end_time }}</h3><br>
+Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
+{% if call.notes %}Notes: {{ call.notes }}{% endif %}
 {% endif %}
+{% endfor %}
+{% endif %}
+<br>
 {% endblock %}

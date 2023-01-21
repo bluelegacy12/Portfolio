@@ -4,7 +4,11 @@
         <div class="col-sm-offset-2 col-sm-10">
             <span class="text-danger small">{{ field.errors }}</span>
         </div>
-        <label class="control-label col-sm-2">{{ field.label_tag }}</label>
+        <label class="control-label col-sm-2">{% if "show_id" in field.label_tag %} Show: 
+            {% elif "performer_id" in field.label_tag %} Performer:
+            {% elif "role_id" in field.label_tag %} Role:
+            {% elif "director_id" in field.label_tag %} Director:
+            {% else %} {{ field.label_tag }} {% endif %}</label>
         <div class="col-sm-1">{{ field }}</div>
     </div>
 {% endfor %}

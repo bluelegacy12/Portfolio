@@ -1,19 +1,9 @@
 body{
     background: white url("images/bluebackground.png");
     background-size: cover;
-    text-align: center;
+    text-align: left;
 }
 
 .navbar{
     border-radius: 0px;
-}
-
-.row {
-    display: flex;
-    padding-left: 10%;
-}
-
-.column {
-    float: left;
-    width: 50%;
 }

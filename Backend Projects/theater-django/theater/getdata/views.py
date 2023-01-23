@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import NameForm, UserForm
-from .models import Performers, Shows, Roles, CallTime
+from .forms import NameForm, UserForm, LoginForm
+from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import Group
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -13,7 +14,7 @@ all_roles = Roles.objects.all()
 
 class UserFormView(View):
     form_class = UserForm
-    template_name = 'getapp/register.html'
+    template_name = 'register.html'
 
     #display blank form
     def get(self, request):
@@ -27,11 +28,44 @@ class UserFormView(View):
         if form.is_valid():
             user = form.save(commit=False)
 
-            # unify the data into commit-ready format
+            # unify the data into commit-ready format (cleaned data or normalized)
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user.set_password(password)
             user.save()
+            group = Group.objects.get(name='Artist')
+            user.groups.add(group)
+
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('getdata:home')
+        return render(request, self.template_name, {'form': form})
+
+class CompanyFormView(View):
+    form_class = UserForm
+    template_name = 'company_register.html'
+
+    #display blank form
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    #register user based on input data
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            # unify the data into commit-ready format (cleaned data or normalized)
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            user.save()
+            group = Group.objects.get(name='Company')
+            user.groups.add(group)
 
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -111,7 +145,7 @@ class RoleDelete(DeleteView):
 class CallCreate(CreateView):
     model = CallTime
     template_name = 'create_form.html'
-    fields = ['show_id_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+    fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
 
 class CallInfoView(generic.DetailView):
     model = CallTime
@@ -124,10 +158,41 @@ class CallInfoView(generic.DetailView):
 
 class CallUpdate(UpdateView):
     model = CallTime
-    fields = ['show_id_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+    fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
     template_name = 'create_form.html'
 
 class CallDelete(DeleteView):
     model = CallTime
     template_name = 'delete_confirm.html'
     success_url = reverse_lazy('getdata:home')
+
+class VenueCreate(CreateView):
+    model = RehearsalVenues
+    fields = ['name', 'location']
+    template_name = 'create_form.html'
+
+class VenueInfoView(generic.DetailView):
+    model = RehearsalVenues
+    template_name = 'venueinfo.html'
+
+class UploadsView(generic.ListView):
+    template_name = 'documents.html'
+
+    def get_queryset(self):
+        return Uploads.objects.all()
+
+class UploadsCreate(CreateView):
+    model = Uploads
+    fields = ['name', 'file', 'details']
+    template_name = 'create_form.html'
+
+class UploadsUpdate(UpdateView):
+    model = Uploads
+    fields = ['name', 'file', 'details']
+    template_name = 'create_form.html'
+
+class UploadsDelete(DeleteView):
+    model = Uploads
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:documents')
+

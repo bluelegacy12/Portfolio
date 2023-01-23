@@ -8,6 +8,9 @@
 {% if call.date == object.date and call.show_id_id == object.show_id_id %}
 <hr>
 <h2>{{ call.start_time }} - {{ call.end_time }}</h2><br>
+{% if call.venue_id %}
+{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
+{% endif %}
 Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">

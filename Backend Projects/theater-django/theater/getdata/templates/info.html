@@ -32,7 +32,8 @@
     </button>
 </form>
 </div>
-<div style="float: left; width: 50%; padding-left: 15px; border-left: 2px solid;">
+<div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
+{% if calltimes %}
 <h2><u> Most Recent Schedule:</u></h2>
 <h3> {{ calltimes.last.date }}</h3>
 <h4><ul>
@@ -41,7 +42,10 @@
 {% if call.date == calltimes.last.date and p == object %}
 <br><li>{{ call.show_id_id.title }}:
 {{ call.start_time }} - {{ call.end_time }}
-{% if call.notes %} - Notes: {{ call.notes }} {% endif %}</li>
+{% if call.venue_id %}
+<br><br>{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
+{% endif %}
+{% if call.notes %}Notes: {{ call.notes }} <br><br>{% endif %}</li>
 {% endif %}
 {% endfor %}
 {% endfor %}
@@ -49,4 +53,5 @@
  <h3><a href="{% url 'getdata:callinfo' calltimes.last.id %}">See full schedule</a></h3>
 </div>
 </div>
+{% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     </head>
-    <body>
+    <body style="text-align: left;">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -18,6 +18,7 @@
             </button>
             <a class="navbar-brand" href="{% url 'getdata:home' %}">Home</a>&nbsp;
             </div>
+            {% if user.is_authenticated %}
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="">
@@ -29,6 +30,12 @@
                     <li class="">
                         <a href="{% url 'getdata:show-add' %}" aria-hidden="true">Add Show</a>&nbsp;
                     </li>
+                    <li class="">
+                        <a href="{% url 'getdata:venue-add' %}" aria-hidden="true">Add Venue</a>&nbsp;
+                    </li>
+                    <li class="">
+                        <a href="{% url 'getdata:documents' %}" aria-hidden="true">Documents</a>&nbsp;
+                    </li>
                 </ul>
                 <form class="navbar-form navbar-left" role="search" method="get" action="">
                     <div class="form-group">
@@ -38,17 +45,38 @@
                 </form>
                 <ul class="nav navbar-right">
                     <li class="">
-                        <a href="">
+                        <a href="{% url 'getdata:logout' %}">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
                         </a>
                     </li>
                 </ul>
             </div>
+            {% else %}
+            <ul class="nav navbar-right">
+                <li class="">
+                    <a href="{% url 'getdata:register' %}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Sign up
+                    </a>
+                </li>
+            </ul>
         </div>
+    {% endif %}
     </nav>
     <div style="margin-left: 2%;">
+    {% if user.is_authenticated or 'user' in request.get_full_path %}
     {% block body %}
     {% endblock %}
+    {% else %}
+    <div style="text-align: center;">
+    <h1><i>Call Time</i></h1>
+    <br>
+    <h2>Call Time is the best way for projects involved in a dynamic daily schedule to stay organized and communicate with their cast or team. It provides an easy access tool for members to check their daily schedule and for the schedulers to make those schedules with minimal hassle!</h2>
+    <br>
+    <h2><a href="{% url 'getdata:login' %}">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Login
+    </a></h2>
+    </div>
+    {% endif %}
     </div>
     </body>
 </html>

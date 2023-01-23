@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}
+<h1>Documents</h1>
+<hr>
+{% if object_list.count > 0 %}
+{% for doc in object_list %}
+<h2>
+<a href="{{ doc.file.url }}" target="_blank"> {{ doc.name }}</a> <br><br>
+{{ doc.details }}
+</h2>
+<br>
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:documents-update' doc.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="doc_id" value="{{ doc.id }}">&nbsp;
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-wrench"></span>
+    </button>&nbsp;
+</form>&nbsp;
+<form style="display: inline" action="{% url 'getdata:documents-delete' doc.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="doc_id" value="{{ doc.id }}">
+    <button type="submit" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-trash"></span>
+    </button>
+</form>
+<hr>
+{% endfor %}
+{% else %}
+<h2>No Documents have been uploaded yet</h2>
+{% endif %}
+<h3><a href="{% url 'getdata:documents-add' %}">+ Upload a new file</a></h3>
+{% endblock %}

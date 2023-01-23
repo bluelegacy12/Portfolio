@@ -12,7 +12,7 @@ class Performers(models.Model):
         return reverse('getdata:info', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return self.name + ', ' + self.email + ', ' + self.phone
+        return self.name
 
 
 class Shows(models.Model):
@@ -25,7 +25,7 @@ class Shows(models.Model):
             return reverse('getdata:showinfo', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return self.title + " - directed by: " + self.director_id.name + " - opens: " + str(self.show_open)
+        return self.title
 
 
 class Roles(models.Model):
@@ -40,16 +40,15 @@ class Roles(models.Model):
         return self.name + " - from: " + self.show_id.title + " - performer: " + self.performer_id.name
 
 
-class Scenes(models.Model):
-    scene_name = models.CharField(max_length=128, unique=True, null=False)
-    show_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
-    role = models.ManyToManyField(Roles)
-
-
 class RehearsalVenues(models.Model):
     name = models.CharField(max_length=128, unique=True, null=False)
     location = models.CharField(max_length=128, unique=True, null=False)
-    show_id = models.ManyToManyField(Shows)
+
+    def get_absolute_url(self):
+            return reverse('getdata:venueinfo', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return self.name
 
 
 class Conflicts(models.Model):
@@ -60,6 +59,7 @@ class Conflicts(models.Model):
 
 class CallTime(models.Model):
     show_id_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
+    venue_id = models.ForeignKey(RehearsalVenues, on_delete=models.SET_NULL, null=True)
     date = models.DateField(null=False)
     start_time = models.TimeField(null=False)
     end_time = models.TimeField(null=False)
@@ -71,3 +71,14 @@ class CallTime(models.Model):
 
     def __str__(self):
         return str(self.date) + ": " + str(self.start_time)  + " - " + str(self.end_time)
+
+class Uploads(models.Model):
+    name = models.CharField(max_length=128)
+    details = models.TextField(null=True, blank=True)
+    file = models.FileField()
+
+    def get_absolute_url(self):
+            return reverse('getdata:documents')
+
+    def __str__(self):
+        return self.name

@@ -4,7 +4,30 @@
 <h1>Theater Scheduler</h1>
 <h2>Shows</h2>
 {% if object_list.count > 0 %}
-<div class="row" style="display: flexbox;">
+    {% if object_list.count == 1 %}
+<div class="row" style="display: flexbox; margin-left: 1%; padding-left: 2%;">
+    <ul>{% for show in object_list %}
+            {% csrf_token %}
+            <div class="column" style="float: left; width: 100%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
+            {% for role in show.roles_set.all %}
+                <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
+            {% endfor %}
+            <a href="{% url 'getdata:role-add' %}">+ Add Role</a></div>
+            
+        {% endfor %}
+    {% elif object_list.count == 2 %}
+<div class="row" style="display: flexbox; margin-left: 1%; padding-left: 2%;">
+    <ul>{% for show in object_list %}
+            {% csrf_token %}
+            <div class="column" style="float: left; width: 50%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
+            {% for role in show.roles_set.all %}
+                <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
+            {% endfor %}
+            <a href="{% url 'getdata:role-add' %}">+ Add Role</a></div>
+            
+        {% endfor %}
+    {% else %}
+<div class="row" style="display: flexbox; margin-left: 1%; padding-left: 2%;">
 <ul>{% for show in object_list %}
         {% csrf_token %}
         <div class="column" style="float: left; width: 33%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
@@ -12,9 +35,9 @@
             <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
         {% endfor %}
         <a href="{% url 'getdata:role-add' %}">+ Add Role</a></div>
-        
     {% endfor %}
 </ul>
 </div>
+    {% endif %}
 {% endif %}
 {% endblock %}

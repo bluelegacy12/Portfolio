@@ -6,6 +6,7 @@ app_name = 'getdata'
 
 urlpatterns = [
     path('home/', views.HomeView.as_view(), name='home'),
+    path('venues/', views.VenueView.as_view(), name='venues'),
     path('user/login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='home.html'), name='logout'),
     path('documents/', views.UploadsView.as_view(), name='documents'),
@@ -23,6 +24,8 @@ urlpatterns = [
     re_path(r'^roleinfo/(?P<pk>[0-9]+)/$', views.RoleInfoView.as_view(), name='roleinfo'),
     re_path(r'^callinfo/(?P<pk>[0-9]+)/$', views.CallInfoView.as_view(), name='callinfo'),
     re_path(r'^venueinfo/(?P<pk>[0-9]+)/$', views.VenueInfoView.as_view(), name='venueinfo'),
+    re_path(r'^venue/(?P<pk>[0-9]+)/$', views.VenueUpdate.as_view(), name='venue-update'),
+    re_path(r'^venue/(?P<pk>[0-9]+)/delete/$', views.VenueDelete.as_view(), name='venue-delete'),
     re_path(r'^call/(?P<pk>[0-9]+)/$', views.CallUpdate.as_view(), name='call-update'),
     re_path(r'^call/(?P<pk>[0-9]+)/delete/$', views.CallDelete.as_view(), name='call-delete'),
     re_path(r'^performer/(?P<pk>[0-9]+)/$', views.PerformerUpdate.as_view(), name='performer-update'),

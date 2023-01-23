@@ -3,13 +3,13 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>ID: {{ object.id }}</h1>
 <h2>
 <u>Name:</u> {{ object.name }} <br><br>
 <u>Show:</u> {{ object.show_id.title }} <br><br>
 <u>Performer:</u> {{ object.performer_id.name }}
 </h2>
 <br>
+{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:role-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
@@ -24,4 +24,5 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 {% endblock %}

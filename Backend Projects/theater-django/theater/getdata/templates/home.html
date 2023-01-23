@@ -3,6 +3,7 @@
 
 <h1>Theater Scheduler</h1>
 <h2>Shows</h2>
+
 {% if object_list.count > 0 %}
     {% if object_list.count == 1 %}
 <div class="row" style="display: flexbox; margin-left: 1%; padding-left: 2%;">
@@ -34,7 +35,10 @@
         {% for role in show.roles_set.all %}
             <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
         {% endfor %}
-        <a href="{% url 'getdata:role-add' %}">+ Add Role</a></div>
+        {% if user.groups.all.last.name == 'Company' %}
+        <a href="{% url 'getdata:role-add' %}">+ Add Role</a>
+        {% endif %}
+        </div>
     {% endfor %}
 </ul>
 </div>

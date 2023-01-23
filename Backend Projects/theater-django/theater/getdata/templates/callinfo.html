@@ -7,12 +7,13 @@
 {% for call in calltimes %}
 {% if call.date == object.date and call.show_id_id == object.show_id_id %}
 <hr>
-<h2>{{ call.start_time }} - {{ call.end_time }}</h2><br>
-{% if call.venue_id %}
+<h2><u>{{ call.start_time }} - {{ call.end_time }}</u></h2>
+<h3>{% if call.venue_id %}
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
-Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
-{% if call.notes %}Notes: {{ call.notes }}{% endif %}
+Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
+{% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3>
+{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
     {% csrf_token %}
     <input type="hidden" name="call_id" value="{{ call.id }}">&nbsp;
@@ -27,6 +28,7 @@ Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endf
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endblock %}

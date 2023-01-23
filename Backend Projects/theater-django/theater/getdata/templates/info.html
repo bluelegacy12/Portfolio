@@ -5,7 +5,6 @@
 {% endif %}
 <div style="display: flexbox;">
 <div style="float: left; width: 50%;">
-<h1>ID: {{ object.id }}</h1>
 <h2>
 <u>Name</u>: {{ object.name }} <br><br>
 <u>Email</u>: {{ object.email }} <br><br>
@@ -17,6 +16,7 @@
 {% endfor %}
 </h2><br><br>
 {% endif %}
+{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="performer_id" value="{{ object.id }}">&nbsp;
@@ -31,26 +31,25 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 </div>
 <div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
-{% if calltimes %}
+{% if object.calltime_set.all.count > 0 %}
 <h2><u> Most Recent Schedule:</u></h2>
-<h3> {{ calltimes.last.date }}</h3>
+<h3> {{ object.calltime_set.all.last.date }}</h3>
 <h4><ul>
-{% for call in calltimes %}
-{% for p in call.performers.all %}
-{% if call.date == calltimes.last.date and p == object %}
-<br><li>{{ call.show_id_id.title }}:
-{{ call.start_time }} - {{ call.end_time }}
+{% for call in object.calltime_set.all %}
+{% if call.date == object.calltime_set.all.last.date %}
+<br><li><u>{{ call.show_id_id.title }}:
+{{ call.start_time }} - {{ call.end_time }}</u>
 {% if call.venue_id %}
 <br><br>{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
 {% if call.notes %}Notes: {{ call.notes }} <br><br>{% endif %}</li>
 {% endif %}
 {% endfor %}
-{% endfor %}
 </ul></h4>
- <h3><a href="{% url 'getdata:callinfo' calltimes.last.id %}">See full schedule</a></h3>
+ <h3><a href="{% url 'getdata:callinfo' object.calltime_set.all.last.id %}">See full schedule</a></h3>
 </div>
 </div>
 {% endif %}

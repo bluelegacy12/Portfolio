@@ -3,26 +3,24 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>Documents</h1>
+<h1>Rehearsal and Performance Venues</h1>
 <hr>
 {% if object_list.count > 0 %}
-{% for doc in object_list %}
-<h2>
-<a href="{{ doc.file.url }}" target="_blank"> {{ doc.name }}</a> <br><br>
-{{ doc.details }}
-</h2>
+{% for venue in object_list %}
+<h2>{{ venue.name }}</h2>
+<h3>{{ venue.location }}</h3>
 <br>
 {% if user.groups.all.last.name == 'Company' %}
-<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:documents-update' doc.id %}">
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:venue-update' venue.id %}">
     {% csrf_token %}
-    <input type="hidden" name="doc_id" value="{{ doc.id }}">&nbsp;
+    <input type="hidden" name="venue" value="{{ venue.id }}">&nbsp;
     <button type="submit" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-wrench"></span>
     </button>&nbsp;
 </form>&nbsp;
-<form style="display: inline" action="{% url 'getdata:documents-delete' doc.id %}">
+<form style="display: inline" action="{% url 'getdata:venue-delete' venue.id %}">
     {% csrf_token %}
-    <input type="hidden" name="doc_id" value="{{ doc.id }}">
+    <input type="hidden" name="venue_id" value="{{ venue.id }}">
     <button type="submit" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-trash"></span>
     </button>
@@ -34,6 +32,6 @@
 <h2>No Documents have been uploaded yet</h2>
 {% endif %}
 {% if user.groups.all.last.name == 'Company' %}
-<h3><a href="{% url 'getdata:documents-add' %}">+ Upload a new file</a></h3>
+<h3><a href="{% url 'getdata:venue-add' %}">+ Add new venue</a></h3>
 {% endif %}
 {% endblock %}

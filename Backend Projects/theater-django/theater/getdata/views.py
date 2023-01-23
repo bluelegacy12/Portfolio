@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import NameForm, UserForm, LoginForm
+from .forms import NameForm, UserForm
 from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
@@ -99,11 +99,6 @@ class InfoView(generic.DetailView):
     model = Performers
     template_name = 'info.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(InfoView, self).get_context_data(**kwargs)
-        context['calltimes'] = CallTime.objects.all()
-        return context
-
 class ShowInfoView(generic.DetailView):
     model = Shows
     template_name = 'showinfo.html'
@@ -166,6 +161,12 @@ class CallDelete(DeleteView):
     template_name = 'delete_confirm.html'
     success_url = reverse_lazy('getdata:home')
 
+class VenueView(generic.ListView):
+    template_name = 'venues.html'
+
+    def get_queryset(self):
+        return RehearsalVenues.objects.all()
+
 class VenueCreate(CreateView):
     model = RehearsalVenues
     fields = ['name', 'location']
@@ -174,6 +175,16 @@ class VenueCreate(CreateView):
 class VenueInfoView(generic.DetailView):
     model = RehearsalVenues
     template_name = 'venueinfo.html'
+
+class VenueUpdate(UpdateView):
+    model = RehearsalVenues
+    fields = ['name', 'location']
+    template_name = 'create_form.html'
+
+class VenueDelete(DeleteView):
+    model = RehearsalVenues
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:venues')
 
 class UploadsView(generic.ListView):
     template_name = 'documents.html'

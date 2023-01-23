@@ -5,7 +5,6 @@
 {% endif %}
 <div style="display: flexbox;">
 <div style="float: left; width: 50%;">
-<h1>ID: {{ object.id }}</h1>
 <h2>
     <u>Title:</u> {{ object.title }} <br><br>
     <u>Rehearsal Start Date:</u> {{ object.rehearsal_start }} <br><br>
@@ -21,6 +20,7 @@
 {% endifchanged %}
 {% endfor %}
 <br><br>
+{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:show-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
@@ -35,6 +35,7 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 </div>
 <div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
 <h2><u>Most Recent Schedule:</u></h2>
@@ -42,12 +43,16 @@
 {% for call in object.calltime_set.all %}
 {% if call.date == object.calltime_set.all.last.date %}
 <hr>
-<h3>{{ call.start_time }} - {{ call.end_time }}</h3><br>
+<h3>{{ call.start_time }} - {{ call.end_time }}</h3>
+{% if call.venue_id %}
+<u>{{ call.venue_id }}</u> - {{ call.venue_id.location }}<br>
+{% endif %}
 Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}
 {% endif %}
 {% endfor %}
 {% else %}
+{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:show-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
@@ -62,6 +67,7 @@ Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endf
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 {% endif %}
 <br>
 </div>

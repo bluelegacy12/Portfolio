@@ -3,24 +3,25 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>ID: {{ object.id }}</h1>
 <h2>
 <u>Name:</u> {{ object }} <br><br>
 <u>Location:</u> {{ object.location }} <br><br>
 </h2>
 <br>
-<form style="display: inline; margin-left: 5%;" action="">
+{% if user.groups.all.last.name == 'Company' %}
+<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:venue-update' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">&nbsp;
     <button type="submit" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-wrench"></span>
     </button>&nbsp;
 </form>&nbsp;
-<form style="display: inline" action="">
+<form style="display: inline" action="{% url 'getdata:venue-delete' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="show_id" value="{{ object.id }}">
     <button type="submit" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
+{% endif %}
 {% endblock %}

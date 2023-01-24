@@ -29,7 +29,7 @@
 <hr>
 {% endfor %}
 {% else %}
-<h2>No Documents have been uploaded yet</h2>
+<h2>No venues to display</h2>
 {% endif %}
 {% if user.groups.all.last.name == 'Company' %}
 <h3><a href="{% url 'getdata:venue-add' %}">+ Add new venue</a></h3>

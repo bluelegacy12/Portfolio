@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import NameForm, UserForm
-from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads
+from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads, Company
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.views import generic
@@ -35,6 +35,11 @@ class UserFormView(View):
             user.save()
             group = Group.objects.get(name='Artist')
             user.groups.add(group)
+            performer = Performers()
+            performer.username = username
+            performer.name = form.cleaned_data['name']
+            performer.email = form.cleaned_data['email']
+            performer.save()
 
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -66,6 +71,11 @@ class CompanyFormView(View):
             user.save()
             group = Group.objects.get(name='Company')
             user.groups.add(group)
+            company = Company()
+            company.username = username
+            company.name = form.cleaned_data['name']
+            company.email = form.cleaned_data['email']
+            company.save()
 
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -76,13 +86,18 @@ class CompanyFormView(View):
 
 class PerformerCreate(CreateView):
     model = Performers
-    fields = ['name', 'email', 'phone']
+    fields = ['username', 'name', 'email', 'phone']
     template_name = 'create_form.html'
 
 class ShowCreate(CreateView):
     model = Shows
-    fields = ['title', 'rehearsal_start', 'show_open', 'director_id']
+    fields = ['title', 'rehearsal_start', 'show_open', 'director_id', 'company']
     template_name = 'create_form.html'
+        
+    def get_context_data(self, **kwargs):
+        context = super(ShowCreate, self).get_context_data(**kwargs)
+        context['companies'] = Company.objects.all()
+        return context
 
 class RoleCreate(CreateView):
     model = Roles
@@ -92,8 +107,9 @@ class RoleCreate(CreateView):
 class HomeView(generic.ListView):
     template_name = 'home.html'
 
+    # would like to change this to only iterate through data related to company attribute
     def get_queryset(self):
-        return Shows.objects.all()
+        return Company.objects.all()
 
 class InfoView(generic.DetailView):
     model = Performers

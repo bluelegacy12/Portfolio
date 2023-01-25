@@ -134,6 +134,16 @@ class InfoView(generic.DetailView):
         context['company_list'] = Company.objects.all()
         return context
 
+class ProfileView(generic.DetailView):
+    model = Performers
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context['performer_list'] = Performers.objects.all()
+        context['company_list'] = Company.objects.all()
+        return context
+
 class ShowInfoView(generic.DetailView):
     model = Shows
     template_name = 'showinfo.html'
@@ -314,3 +324,17 @@ class AddPerformer(View):
             company.save()
             return redirect('getdata:home')
         return render(request, self.template_name, {'form': form})
+
+class PrivacyChange(UpdateView):
+    model = Performers
+    template_name = 'profile.html'
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        performer = Performers.objects.get(username=request.user.username)
+        if performer.public_profile == True:
+            performer.public_profile = False
+        else:
+            performer.public_profile = True
+        performer.save()
+        return redirect('getdata:profile')

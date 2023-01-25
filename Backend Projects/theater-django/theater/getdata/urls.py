@@ -12,6 +12,8 @@ urlpatterns = [
     path('documents/', views.UploadsView.as_view(), name='documents'),
     # /info/23/
     re_path(r'^info/(?P<pk>[0-9]+)/$', views.InfoView.as_view(), name='info'),
+    re_path(r'^profile/(?P<pk>[0-9]+)/$', views.ProfileView.as_view(), name='profile'),
+    re_path(r'^privacy/(?P<pk>[0-9]+)/$', views.PrivacyChange.as_view(), name='privacy'),
     path('user/register/', views.UserFormView.as_view(), name='register'),
     path('user/registercompany/', views.CompanyFormView.as_view(), name='registercompany'),
     path('performer/add/', views.AddPerformer.as_view(), name='add-performer'),

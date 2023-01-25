@@ -54,7 +54,7 @@ class Roles(models.Model):
 
 
 class RehearsalVenues(models.Model):
-    name = models.CharField(max_length=128, null=False, default="Main Rehearsal Hall")
+    name = models.CharField(max_length=128, null=False, default="Rehearsal Room 1")
     location = models.CharField(max_length=128, null=False, default="123 Fourth St.")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
 

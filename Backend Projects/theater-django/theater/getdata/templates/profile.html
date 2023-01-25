@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}
+<div style="display: flexbox;">
+    <div style="float: left; width: 50%;">
+
+{% if user.groups.all.last.name == 'Artist' %}
+    {% for performer in performer_list %}
+        {% if performer.username == user.username %}
+            <h2><u>Name</u>: {{ performer.name }} <br><br>
+            <u>Email</u>: {{ performer.email }} <br><br>
+            <u>Phone</u>: {{ performer.phone }}<br><br>
+            <u>Username</u>: {{ performer.username }}<br><br>
+            {% if performer.roles_set.all.count > 0 %}
+                <u>Roles:</u>
+                {% for role in performer.roles_set.all %}
+                    <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i>{% if role != object.roles_set.all.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+            <br><br>
+            {% if performer.username == user.username %}
+                Public Profile: {{ performer.public_profile }}<br><br>
+                <form class="form-horizontal" action="{% url 'getdata:privacy' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-success">Change Privacy</button>
+                        </div>
+                    </div>
+                </form>
+                <h3>To hide your phone and email from other users, turn Public Profile to False.</h3><br><br>
+            {% endif %}
+            </h2><br>
+            {% if performer.username == user.username %}
+                <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' performer.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="performer_id" value="{{ performer.id }}">&nbsp;
+                    <button type="submit" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-wrench"></span>
+                    </button>&nbsp;
+                </form>&nbsp;
+            {% endif %}
+            </div>
+<!-- show personal schedule -->
+            {% if performer.calltime_set.all.count > 0 %} <!--need this code incase someone else tries to view another's full schedule-->
+                <div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
+                {% if performer.calltime_set.all.count > 0 %}
+                    <h2><u> Most Recent Schedule:</u></h2>
+                    <h3> {{ performer.calltime_set.all.last.date }}</h3>
+                    <h4><ul>
+                    {% for call in performer.calltime_set.all %}
+                        {% if call.date == performer.calltime_set.all.last.date %}
+                            <br><li><u>{{ call.show_id_id.title }}:
+                            {{ call.start_time }} - {{ call.end_time }}</u>
+                            {% if call.venue_id %}
+                                <br><br>{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
+                            {% endif %}
+                            {% if call.notes %}Notes: {{ call.notes }} <br><br>
+                            {% endif %}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul></h4>
+                    <h3><a href="{% url 'getdata:callinfo' object.calltime_set.all.last.id %}">See full schedule</a></h3>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        </div>
+    {% endfor %}
+
+{% elif user.groups.all.last.name == 'Company' %}
+    {% for company in company_list %}
+        {% if company.username == user.username %}
+        <h2><u>Name</u>: {{ company.name }} <br><br>
+            <u>Email</u>: {{ company.email }} <br><br>
+            <u>Username</u>: {{ company.username }}<br><br>
+            {% if company.performers.all.count > 0 %}
+                <u>Current Artists:</u></h2>
+                <h3>
+                {% for artist in company.performers.all %}
+                    {{ artist.name }}: &nbsp;
+                    {% for role in artist.roles_set.all %}
+                        {% for show in company.shows_set.all %}
+                            {% if role.show_id == show %}
+                                <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i><a href="{% url 'getdata:showinfo' role.show_id.id %}">{{ role.show_id.title }}</a></i>   
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% if company.performers.all.count < 10 %}
+                    <br><br>
+                    {% else %}
+                    <br>
+                    {% endif %}
+                {% endfor %}
+                </h3><br><br>
+            {% endif %}
+        {% endif %}
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+{% endblock %}

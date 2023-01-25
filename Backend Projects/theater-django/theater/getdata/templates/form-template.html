@@ -17,6 +17,7 @@
         <div class="col-sm-offset-2 col-sm-10">
             <span class="text-danger small">{{ field.errors }}</span>
         </div>
+        <!-- This is terrible. Will def set myself up better in the models next time-->
         <label class="control-label col-sm-2">{% if "show_id" in field.label_tag %} Show: 
             {% elif "performer_id" in field.label_tag %} Performer:
             {% elif "role_id" in field.label_tag %} Role:

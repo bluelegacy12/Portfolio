@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
-{% if user.groups.all.last.name == 'Company' %}
+{% if user.username == object.username %}
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% include 'form-template.html' %}
@@ -11,6 +11,6 @@
     </div>
 </form>
 {% else %}
-<h1>Access denied. You must have a Company account to proceed.</h1>
+<h1>Access denied. You must be logged into this account to proceed.</h1>
 {% endif %}
 {% endblock %}

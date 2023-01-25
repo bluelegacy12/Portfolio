@@ -5,12 +5,13 @@
 {% endif %}
 <h1>Rehearsal and Performance Venues</h1>
 <hr>
-{% if object_list.count > 0 %}
-{% for venue in object_list %}
+{% if user.groups.all.last.name == 'Company' %}
+{% for company in object_list %}
+{% if company.username == user.username %}
+{% for venue in company.rehearsalvenues_set.all %}
 <h2>{{ venue.name }}</h2>
 <h3>{{ venue.location }}</h3>
 <br>
-{% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:venue-update' venue.id %}">
     {% csrf_token %}
     <input type="hidden" name="venue" value="{{ venue.id }}">&nbsp;
@@ -25,13 +26,24 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
-{% endif %}
 <hr>
 {% endfor %}
-{% else %}
-<h2>No venues to display</h2>
 {% endif %}
-{% if user.groups.all.last.name == 'Company' %}
+{% endfor %}
 <h3><a href="{% url 'getdata:venue-add' %}">+ Add new venue</a></h3>
+{% elif user.groups.all.last.name == 'Artist' %}
+{% for company in object_list %}
+{% for performer in company.performers.all %}
+{% if performer.username == user.username %}
+<h2><u>{{ company }}</u></h2>
+{% for venue in company.rehearsalvenues_set.all %}
+<h3>{{ venue.name }}</h3>
+<h4>{{ venue.location }}</h4>
+<br>
+{% endfor %}
+<hr>
+{% endif %}
+{% endfor %}
+{% endfor %}
 {% endif %}
 {% endblock %}

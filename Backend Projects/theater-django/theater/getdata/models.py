@@ -1,14 +1,12 @@
 from django.db import models
 import datetime
 from django.urls import reverse
+from django import forms
 
-class Meta:
-    managed = True
-    company = 'Company'
 # Create your models here.
 class Performers(models.Model):
     username = models.CharField(max_length=128, unique=True, null=False)
-    name = models.CharField(max_length=128, unique=True, null=False)
+    name = models.CharField(max_length=128, null=False)
     email = models.CharField(max_length=128, unique=True, null=False)
     phone = models.CharField(max_length=128, unique=True, null=True, blank=True)
     public_profile = models.BooleanField(default=True)
@@ -30,9 +28,9 @@ class Company(models.Model):
 
 
 class Shows(models.Model):
-    title = models.CharField(max_length=128, unique=True, null=False)
-    rehearsal_start = models.DateField(null=False)
-    show_open = models.DateField(null=False)
+    title = models.CharField(max_length=128, null=False)
+    rehearsal_start = models.DateField(null=False, default="1/1/2023")
+    show_open = models.DateField(null=False, default="1/1/2023")
     director_id = models.ForeignKey(Performers, on_delete=models.SET_NULL, null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
 
@@ -44,7 +42,7 @@ class Shows(models.Model):
 
 
 class Roles(models.Model):
-    name = models.CharField(max_length=128, null=False)
+    name = models.CharField(max_length=128, null=False, default="ex: Tosca ")
     show_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
     performer_id = models.ForeignKey(Performers, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -56,9 +54,9 @@ class Roles(models.Model):
 
 
 class RehearsalVenues(models.Model):
-    name = models.CharField(max_length=128, unique=True, null=False)
-    location = models.CharField(max_length=128, unique=True, null=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    name = models.CharField(max_length=128, null=False, default="Main Rehearsal Hall")
+    location = models.CharField(max_length=128, null=False, default="123 Fourth St.")
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
 
     def get_absolute_url(self):
             return reverse('getdata:venueinfo', kwargs={'pk': self.pk})
@@ -76,12 +74,12 @@ class Conflicts(models.Model):
 class CallTime(models.Model):
     show_id_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
     venue_id = models.ForeignKey(RehearsalVenues, on_delete=models.SET_NULL, null=True)
-    date = models.DateField(null=False)
-    start_time = models.TimeField(null=False)
-    end_time = models.TimeField(null=False)
+    date = models.DateField(null=False, default="1/1/2023 ")
+    start_time = models.TimeField(null=False, default="10:00 ")
+    end_time = models.TimeField(null=False, default="13:00 ")
     performers = models.ManyToManyField(Performers)
     notes = models.TextField(null=True, blank=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
 
     def get_absolute_url(self):
             return reverse('getdata:callinfo', kwargs={'pk': self.pk})

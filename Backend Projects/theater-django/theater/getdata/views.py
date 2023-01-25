@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import NameForm, UserForm
+from .forms import NameForm, UserForm, AddPerformerForm
 from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads, Company
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
@@ -7,6 +7,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
+from django.http import Http404
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -93,7 +94,13 @@ class ShowCreate(CreateView):
     model = Shows
     fields = ['title', 'rehearsal_start', 'show_open', 'director_id', 'company']
     template_name = 'create_form.html'
-        
+
+    def get_form(self, *args, **kwargs):
+        form = super(ShowCreate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['director_id'].queryset = c.performers
+        return form
+
     def get_context_data(self, **kwargs):
         context = super(ShowCreate, self).get_context_data(**kwargs)
         context['companies'] = Company.objects.all()
@@ -104,16 +111,28 @@ class RoleCreate(CreateView):
     fields = ['name', 'show_id', 'performer_id']
     template_name = 'create_form.html'
 
+    def get_form(self, *args, **kwargs):
+        form = super(RoleCreate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['show_id'].queryset = c.shows_set.all()
+        form.fields['performer_id'].queryset = c.performers
+        return form
+
 class HomeView(generic.ListView):
     template_name = 'home.html'
 
-    # would like to change this to only iterate through data related to company attribute
     def get_queryset(self):
         return Company.objects.all()
 
 class InfoView(generic.DetailView):
     model = Performers
     template_name = 'info.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(InfoView, self).get_context_data(**kwargs)
+        context['performer_list'] = Performers.objects.all()
+        context['company_list'] = Company.objects.all()
+        return context
 
 class ShowInfoView(generic.DetailView):
     model = Shows
@@ -126,7 +145,8 @@ class RoleInfoView(generic.DetailView):
 class PerformerUpdate(UpdateView):
     model = Performers
     fields = ['name', 'email', 'phone']
-    template_name = 'create_form.html'
+    template_name = 'update_performer.html'
+
 
 class PerformerDelete(DeleteView):
     model = Performers
@@ -138,6 +158,12 @@ class ShowUpdate(UpdateView):
     fields = ['title', 'rehearsal_start', 'show_open', 'director_id']
     template_name = 'create_form.html'
 
+    def get_form(self, *args, **kwargs):
+        form = super(ShowUpdate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['director_id'].queryset = c.performers
+        return form
+
 class ShowDelete(DeleteView):
     model = Shows
     template_name = 'delete_confirm.html'
@@ -148,6 +174,13 @@ class RoleUpdate(UpdateView):
     fields = ['name', 'show_id', 'performer_id']
     template_name = 'create_form.html'
 
+    def get_form(self, *args, **kwargs):
+        form = super(RoleUpdate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['show_id'].queryset = c.shows_set.all()
+        form.fields['performer_id'].queryset = c.performers
+        return form
+
 class RoleDelete(DeleteView):
     model = Roles
     template_name = 'delete_confirm.html'
@@ -156,7 +189,20 @@ class RoleDelete(DeleteView):
 class CallCreate(CreateView):
     model = CallTime
     template_name = 'create_form.html'
-    fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
+    fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes', 'company']
+
+    def get_form(self, *args, **kwargs):
+        form = super(CallCreate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
+        form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
+        form.fields['performers'].queryset = c.performers
+        return form
+
+    def get_context_data(self, **kwargs):
+        context = super(CallCreate, self).get_context_data(**kwargs)
+        context['companies'] = Company.objects.all()
+        return context
 
 class CallInfoView(generic.DetailView):
     model = CallTime
@@ -172,6 +218,14 @@ class CallUpdate(UpdateView):
     fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
     template_name = 'create_form.html'
 
+    def get_form(self, *args, **kwargs):
+        form = super(CallUpdate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
+        form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
+        form.fields['performers'].queryset = c.performers
+        return form
+
 class CallDelete(DeleteView):
     model = CallTime
     template_name = 'delete_confirm.html'
@@ -181,12 +235,17 @@ class VenueView(generic.ListView):
     template_name = 'venues.html'
 
     def get_queryset(self):
-        return RehearsalVenues.objects.all()
+        return Company.objects.all()
 
 class VenueCreate(CreateView):
     model = RehearsalVenues
-    fields = ['name', 'location']
+    fields = ['name', 'location', 'company']
     template_name = 'create_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VenueCreate, self).get_context_data(**kwargs)
+        context['companies'] = Company.objects.all()
+        return context
 
 class VenueInfoView(generic.DetailView):
     model = RehearsalVenues
@@ -206,12 +265,17 @@ class UploadsView(generic.ListView):
     template_name = 'documents.html'
 
     def get_queryset(self):
-        return Uploads.objects.all()
+        return Company.objects.all()
 
 class UploadsCreate(CreateView):
     model = Uploads
-    fields = ['name', 'file', 'details']
+    fields = ['name', 'file', 'details', 'company']
     template_name = 'create_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadsCreate, self).get_context_data(**kwargs)
+        context['companies'] = Company.objects.all()
+        return context
 
 class UploadsUpdate(UpdateView):
     model = Uploads
@@ -223,3 +287,30 @@ class UploadsDelete(DeleteView):
     template_name = 'delete_confirm.html'
     success_url = reverse_lazy('getdata:documents')
 
+class AddPerformer(View):
+    form_class = AddPerformerForm
+    template_name = 'create_form.html'
+
+    #display blank form
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    #register user based on input data
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            user = self.request.user
+
+            # unify the data into commit-ready format (cleaned data or normalized)
+            email = form.cleaned_data['email']
+            company = Company.objects.get(username=user.username)
+            try:
+                performer = Performers.objects.get(email=email)
+            except:
+                raise Http404("Email does not exist")
+            company.performers.add(performer)
+            company.save()
+            return redirect('getdata:home')
+        return render(request, self.template_name, {'form': form})

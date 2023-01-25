@@ -3,7 +3,8 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>{{ object.show_id_id.title }} - {{ object.date }}</h1>
+{% if user.username == object.company.username %}
+<h1><u>{{ object.show_id_id.title }}</u> - {{ object.date }}</h1>
 {% for call in calltimes %}
 {% if call.date == object.date and call.show_id_id == object.show_id_id %}
 <hr>
@@ -12,7 +13,7 @@
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
 Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
-{% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3>
+{% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3><br>
 {% if user.groups.all.last.name == 'Company' %}
 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
     {% csrf_token %}
@@ -31,4 +32,22 @@ Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% 
 {% endif %}
 {% endif %}
 {% endfor %}
+{% else %}
+{% for performer in object.company.performers.all %}
+{% if performer.username == user.username %}
+<h1><u>{{ object.show_id_id.title }}</u> - {{ object.date }}</h1>
+{% for call in calltimes %}
+{% if call.date == object.date and call.show_id_id == object.show_id_id %}
+<hr>
+<h2><u>{{ call.start_time }} - {{ call.end_time }}</u></h2>
+<h3>{% if call.venue_id %}
+{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
+{% endif %}
+Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
+{% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3><br>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
 {% endblock %}

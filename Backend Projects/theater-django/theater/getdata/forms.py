@@ -14,3 +14,8 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'name', 'email', 'password']
+
+class AddPerformerForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email']

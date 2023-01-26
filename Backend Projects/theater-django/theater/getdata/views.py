@@ -134,9 +134,14 @@ class InfoView(generic.DetailView):
         context['company_list'] = Company.objects.all()
         return context
 
-class ProfileView(generic.DetailView):
-    model = Performers
+class ProfileView(generic.ListView):
     template_name = 'profile.html'
+
+    def get_queryset(self):
+        if self.request.user.groups.last == "Artist":
+            return Performers.objects.get(username=self.request.user.username)
+        else:
+            return Company.objects.get(username=self.request.user.username)
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)
@@ -154,7 +159,7 @@ class RoleInfoView(generic.DetailView):
 
 class PerformerUpdate(UpdateView):
     model = Performers
-    fields = ['name', 'email', 'phone']
+    fields = ['email', 'phone']
     template_name = 'update_performer.html'
 
 
@@ -325,12 +330,13 @@ class AddPerformer(View):
             return redirect('getdata:home')
         return render(request, self.template_name, {'form': form})
 
-class PrivacyChange(UpdateView):
-    model = Performers
+class PrivacyChange(generic.ListView):
     template_name = 'profile.html'
 
+    def get_queryset(self):
+        return Performers.objects.get(username=self.request.user.username)
+
     def post(self, request):
-        form = self.form_class(request.POST)
         performer = Performers.objects.get(username=request.user.username)
         if performer.public_profile == True:
             performer.public_profile = False

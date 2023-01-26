@@ -19,20 +19,20 @@
                     <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i>{% if role != object.roles_set.all.last %},{% endif %}
                 {% endfor %}
             {% endif %}
-            <br><br>
+            <br><br></h2>
             {% if performer.username == user.username %}
-                Public Profile: {{ performer.public_profile }}<br><br>
-                <form class="form-horizontal" action="{% url 'getdata:privacy' %}" method="post" enctype="multipart/form-data">
+                <h2><u>Profile</u>: {% if performer.public_profile == True %} Public {% else %} Private {% endif %}</h2><br>
+                <form class="form-horizontal" action="{% url 'getdata:privacy' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-success">Change Privacy</button>
+                            <button type="submit" class="btn btn-primary">Change Privacy</button>
                         </div>
                     </div>
                 </form>
-                <h3>To hide your phone and email from other users, turn Public Profile to False.</h3><br><br>
+                <br><h4>To hide your phone and email from other users, set Public Profile to False.</h4><br>
             {% endif %}
-            </h2><br>
+            
             {% if performer.username == user.username %}
                 <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' performer.id %}">
                     {% csrf_token %}
@@ -62,14 +62,13 @@
                         {% endif %}
                     {% endfor %}
                     </ul></h4>
-                    <h3><a href="{% url 'getdata:callinfo' object.calltime_set.all.last.id %}">See full schedule</a></h3>
+                    <h3><a href="{% url 'getdata:callinfo' performer.calltime_set.all.last.id %}">See full schedule</a></h3>
                     </div>
                 {% endif %}
             {% endif %}
         {% endif %}
-        </div>
     {% endfor %}
-
+</div>
 {% elif user.groups.all.last.name == 'Company' %}
     {% for company in company_list %}
         {% if company.username == user.username %}

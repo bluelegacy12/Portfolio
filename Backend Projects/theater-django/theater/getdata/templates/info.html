@@ -8,7 +8,7 @@
 
 {% if user.groups.all.last.name == 'Artist' %}
     <h2><u>Name</u>: {{ object.name }} <br><br>
-    {% if object.username == user.username or object.public_profile == 0 %}
+    {% if object.username == user.username or object.public_profile == True %}
         <u>Email</u>: {{ object.email }} <br><br>
         <u>Phone</u>: {{ object.phone }}<br><br>
     {% endif %}
@@ -19,14 +19,6 @@
         {% endfor %}
     {% endif %}
     {% if object.username == user.username %}
-        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="checkbox" name="public_profile" value="{{ performer.public_profile }}">
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-success">Change Privacy</button>
-                </div>
-            </div>
         </form><br><br>
     {% endif %}
     </h2><br><br>

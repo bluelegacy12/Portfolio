@@ -8,7 +8,18 @@
         <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     </head>
     <body style="text-align: left;">
-    <nav class="navbar navbar-default">
+        <style>
+            body {
+                background: rgb(171,255,122);
+                background: linear-gradient(90deg, rgba(171,255,122,1) 0%, rgba(0,228,193,1) 35%, rgba(0,212,255,1) 100%);
+                text-align: left;
+                font: italic 16pt "Fira Sans", serif;
+            }
+            h1, h2 {
+                font: bold;
+            }
+        </style>
+    <nav class="navbar navbar-dark">
         <div class="container-fluid">
             <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topnavbar">
@@ -41,12 +52,6 @@
                         <a href="{% url 'getdata:venues' %}" aria-hidden="true">Venues</a>&nbsp;
                     </li>
                 </ul>
-                <form class="navbar-form navbar-left" role="search" method="get" action="">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="q" value="">&nbsp;
-                    </div>&nbsp;
-                    <button type="submit" class="btn btn-default">Search</button>&nbsp;
-                </form>
                 <ul class="nav navbar-right">
                     <li class="">
                         <a href="{% url 'getdata:logout' %}">
@@ -68,12 +73,6 @@
                         <a href="{% url 'getdata:venues' %}" aria-hidden="true">Venues</a>&nbsp;
                     </li>
                 </ul>
-                <form class="navbar-form navbar-left" role="search" method="get" action="">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="q" value="">&nbsp;
-                    </div>&nbsp;
-                    <button type="submit" class="btn btn-default">Search</button>&nbsp;
-                </form>
                 <ul class="nav navbar-right">
                     <li class="">
                         <a href="{% url 'getdata:logout' %}">

@@ -12,7 +12,7 @@ class Performers(models.Model):
     public_profile = models.BooleanField(default=True)
 
     def get_absolute_url(self):
-        return reverse('getdata:info', kwargs={'pk': self.pk})
+        return reverse('getdata:profile')
 
     def __str__(self):
         return self.name
@@ -25,6 +25,9 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('getdata:profile')
 
 
 class Shows(models.Model):

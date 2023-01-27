@@ -30,7 +30,7 @@
                         </div>
                     </div>
                 </form>
-                <br><h4>To hide your phone and email from other users, set Public Profile to False.</h4><br>
+                <br><h4>To hide your phone and email from other users, set Profile to Private.</h4><br>
             {% endif %}
             
             {% if performer.username == user.username %}
@@ -93,8 +93,15 @@
                     <br>
                     {% endif %}
                 {% endfor %}
-                </h3><br><br>
+                </h3>
             {% endif %}
+            <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:company-update' company.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="company_id" value="{{ company.id }}">&nbsp;
+                <button type="submit" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                </button>&nbsp;
+            </form>&nbsp;
         {% endif %}
         </div>
     {% endfor %}

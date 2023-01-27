@@ -60,50 +60,55 @@
 </div>
 
 {% elif user.groups.all.last.name == 'Company' %}
-    {% for company in company_list %}
-        {% if company.username == user.username %}
-            {% for performer in company.performers.all %}
-                {% if object.username == performer.username %}
-                    <h2><u>Name</u>: {{ performer.name }} <br><br>
-                    {% if performer.public_profile == True %}
-                        <u>Email</u>: {{ performer.email }} <br><br>
-                        <u>Phone</u>: {{ performer.phone }}<br><br>
+    {% for performer in performer_list %}
+        {% if object.username == performer.username %}
+            <h2><u>Name</u>: {{ performer.name }} <br><br>
+            {% if performer.public_profile == True %}
+                <u>Email</u>: {{ performer.email }} <br><br>
+                <u>Phone</u>: {{ performer.phone }}<br><br>
+            {% endif %}
+            {% if performer.roles_set.all.count > 0 %}
+                <u>Active Roles</u>:
+                {% for role in performer.roles_set.all %}
+                    {% if role.show_id.company.username == user.username %}
+                        <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i><br>
                     {% endif %}
-                    {% if performer.roles_set.all.count > 0 %}
-                        <u>Roles:</u>
-                        {% for role in performer.roles_set.all %}
-                            {% if role.show_id.company.username == user.username %}
-                                <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i><br>
-                            {% endif %}
-                        {% endfor %}
-                        </h2><br><br>
+                {% endfor %}
+                </h2><br><br>
+            {% endif %}
+            {% for company in company_list %}
+                {% if company.username == user.username %}
+                    {% if performer in company.performers.all %}
+                        <h3><div class="glyphicon glyphicon-ok"></div> {{ performer.name}} is on your roster.</h3>
+                    {% else %}
+                        <h3><div class="glyphicon glyphicon-remove"></div> {{ performer.name }} is not on your roster.</h3>
                     {% endif %}
-                    </div>
-                    <div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
-                        {% if performer.calltime_set.all.count > 0 %}
-                            <h2><u> Most Recent Schedule:</u></h2>
-                            {% if performer.calltime_set.all.last.company.username == user.username %}
-                                <h3> {{ performer.calltime_set.all.last.date }}</h3>
-                            {% else %}
-                                <h3>{{ performer.name }}'s most recent calltime is for a different company.</h3>
-                            {% endif %}
-                            <h4><ul>
-                            {% for call in performer.calltime_set.all %}
-                                {% if call.date == performer.calltime_set.all.last.date and call.company.username == user.username%}
-                                    <br><li><u>{{ call.show_id_id.title }}:
-                                    {{ call.start_time }} - {{ call.end_time }}</u>
-                                    {% if call.venue_id %}
-                                        <br><br>{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
-                                    {% endif %}
-                                    {% if call.notes %}Notes: {{ call.notes }} <br><br>
-                                    {% endif %}</li>
-                                {% endif %}
-                            {% endfor %}
-                            </ul></h4>
-                        {% endif %}
-                    </div>
                 {% endif %}
             {% endfor %}
+            </div>
+            <div style="float: left; width: 50%; padding-left: 5%; border-left: 2px solid;">
+                {% if performer.calltime_set.all.count > 0 %}
+                    <h2><u> Most Recent Schedule:</u></h2>
+                    {% if performer.calltime_set.all.last.company.username == user.username %}
+                        <h3> {{ performer.calltime_set.all.last.date }}</h3>
+                    {% else %}
+                        <h3>{{ performer.name }}'s most recent calltime is for a different company.</h3>
+                    {% endif %}
+                    <h4><ul>
+                    {% for call in performer.calltime_set.all %}
+                        {% if call.date == performer.calltime_set.all.last.date and call.company.username == user.username%}
+                            <br><li><u>{{ call.show_id_id.title }}:
+                            {{ call.start_time }} - {{ call.end_time }}</u>
+                            {% if call.venue_id %}
+                                <br><br>{{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
+                            {% endif %}
+                            {% if call.notes %}Notes: {{ call.notes }} <br><br>
+                            {% endif %}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul></h4>
+                {% endif %}
+            </div>
         {% endif %}
     {% endfor %}
 {% endif %}

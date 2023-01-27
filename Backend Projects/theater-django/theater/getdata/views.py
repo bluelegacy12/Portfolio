@@ -32,6 +32,9 @@ class UserFormView(View):
             # unify the data into commit-ready format (cleaned data or normalized)
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            password2 = form.cleaned_data['retype_password']
+            if (password != password2):
+                return render(request, self.template_name, {'form': form})
             user.set_password(password)
             user.save()
             group = Group.objects.get(name='Artist')
@@ -68,6 +71,9 @@ class CompanyFormView(View):
             # unify the data into commit-ready format (cleaned data or normalized)
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            password2 = form.cleaned_data['retype_password']
+            if (password != password2):
+                return render(request, self.template_name, {'form': form})
             user.set_password(password)
             user.save()
             group = Group.objects.get(name='Company')
@@ -85,10 +91,29 @@ class CompanyFormView(View):
                     return redirect('getdata:home')
         return render(request, self.template_name, {'form': form})
 
-class PerformerCreate(CreateView):
-    model = Performers
-    fields = ['username', 'name', 'email', 'phone']
+class CompanyUpdate(UpdateView):
+    model = Company
+    fields = [ 'email', 'performers']
     template_name = 'create_form.html'
+
+    def get_form(self, *args, **kwargs):
+        form = super(CompanyUpdate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['performers'].queryset = c.performers
+        return form
+
+
+def ChangeShowPerformers(self):
+    c = Company.objects.get(username=self.request.user.username)
+    for show in c.shows_set.all():
+        for role in show.roles_set.all():
+            if role.performer_id not in c.performers.all():
+                role.delete()
+    for call in c.calltime_set.all():
+        for performer in call.performers.all():
+            if performer not in c.performers.all():
+                call.performers.remove(performer)
+    return
 
 class ShowCreate(CreateView):
     model = Shows
@@ -138,10 +163,12 @@ class ProfileView(generic.ListView):
     template_name = 'profile.html'
 
     def get_queryset(self):
-        if self.request.user.groups.last == "Artist":
-            return Performers.objects.get(username=self.request.user.username)
-        else:
-            return Company.objects.get(username=self.request.user.username)
+        for g in self.request.user.groups.all():
+            if g.name == "Artist":
+                return Performers.objects.get(username=self.request.user.username)
+            elif g.name == "Company":
+                ChangeShowPerformers(self)
+                return Company.objects.get(username=self.request.user.username)
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)

@@ -14,6 +14,7 @@ urlpatterns = [
     re_path(r'^info/(?P<pk>[0-9]+)/$', views.InfoView.as_view(), name='info'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('privacy/', views.PrivacyChange.as_view(), name='privacy'),
+    path('alert/', views.SendAlert.as_view(), name='alert'),
     path('user/register/', views.UserFormView.as_view(), name='register'),
     path('user/registercompany/', views.CompanyFormView.as_view(), name='registercompany'),
     path('performer/add/', views.AddPerformer.as_view(), name='add-performer'),

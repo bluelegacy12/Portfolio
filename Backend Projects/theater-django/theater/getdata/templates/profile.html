@@ -39,8 +39,8 @@
                     <input type="hidden" name="performer_id" value="{{ performer.id }}">&nbsp;
                     <button type="submit" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-wrench"></span>
-                    </button>&nbsp;
-                </form>&nbsp;
+                    </button>
+                </form>&nbsp; Edit Profile
             {% endif %}
             </div>
 <!-- show personal schedule -->
@@ -95,13 +95,23 @@
                 {% endfor %}
                 </h3>
             {% endif %}
+            <h3>Send an alert to notify your cast of a new schedule posting or any other updates.</h3>
+            <form class="form-horizontal" action="{% url 'getdata:alert' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <textarea type="text" rows="5" cols="33" name="alert">A new schedule has been posted! View it at: dylanelza.pythonanywhere.com/getdata/home/</textarea><br>
+                        <button type="submit" class="btn btn-primary">Send Alert</button>
+                    </div>
+                </div>
+            </form>
             <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:company-update' company.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="company_id" value="{{ company.id }}">&nbsp;
                 <button type="submit" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-wrench"></span>
-                </button>&nbsp;
-            </form>&nbsp;
+                </button>
+            </form>&nbsp; Edit Profile
         {% endif %}
         </div>
     {% endfor %}

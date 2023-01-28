@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<h1>Theater Scheduler</h1>
+<h1><u>Call Time</u></h1>
 <h2>Shows</h2>
 
 {% if user.groups.all.last.name == 'Artist' %}
@@ -19,6 +19,9 @@
     {% endfor %}
     </ul>
 </div>
+{% if performer.roles_set.all.count < 1 %}
+<h3>You are not currently registered under any shows.</h3>
+{% endif %}
 {% endif %}
     {% endfor %}
     {% endfor %}
@@ -30,10 +33,23 @@
             {% csrf_token %}
             <div class="column" style="float: left; width: 33%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
             {% for role in show.roles_set.all %}
-                <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
+                <li><h4><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</h4></li>
             {% endfor %}
-            <a href="{% url 'getdata:role-add' %}">+ Add Role</a></div>
+            <h4><a href="{% url 'getdata:role-add' %}">+ Add Role</a></h4></div>
         {% endfor %}
+        </ul></div><br><br>
+        {% if company.shows_set.all.count < 1 %}
+            <h3>You have no shows to display. Follow these steps to set up your season:</h3>
+        {% endif %}
+        {% if company.calltime_set.all.count < 1 or company.shows_set.all.count < 1%}
+        <ol>
+            <li><h4>Use 'Add Show' to create a show in your season. You do not have to set a director yet.</h4></li>
+            <li><h4>Use 'Add Cast Member' with the artist's email to add them to your roster. This email must be linked to their Artist Account.</h4></li>
+            <li><h4>On the homepage, click 'Add role' under the show title to create a role and link an artist to that role.</h4></li>
+            <li><h4>Use 'Add Venue' to define all rehearsal or performance spaces that the cast could be called to.</h4></li>
+            <li><h4>Once all shows, venues, and artists have been set up, use 'Create a Schedule' to add a call time block. You can have multiple call time blocks per day, so be sure to create a new schedule for a different block in the same day and they will be automatically joined together.</h4></li>
+        </ol>
+        {% endif %}
     {% endif %}
 {% endfor %}
 {% endif %}

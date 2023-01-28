@@ -10,13 +10,37 @@
     <body style="text-align: left;">
         <style>
             body {
-                background: rgb(171,255,122);
-                background: linear-gradient(90deg, rgba(171,255,122,1) 0%, rgba(0,228,193,1) 35%, rgba(0,212,255,1) 100%);
+                background: linear-gradient(90deg, #003459 0%, #003459 25%, #007EA7 100%);
                 text-align: left;
                 font: italic 16pt "Fira Sans", serif;
+                color: white;
+                -webkit-text-stroke: .5px white;
+                text-shadow: 3px 3px 6px #00171F;
+            }
+            a {
+                color: #00A8E8;
+            }
+            input, textarea, select {
+                border: #00A8E8 solid;
+                border-radius: 6px;
+                background-color: #003459;
+            }
+            option {
+                background-color: #003459;
+            }
+            input:-webkit-autofill,
+            textarea:-webkit-autofill,
+            select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px #003459 inset !important;
+            -webkit-text-fill-color: white !important;
             }
             h1, h2 {
                 font: bold;
+                -webkit-text-stroke: 1px white;
+            }
+            span {
+                color: #00A8E8;
+                -webkit-text-stroke: .5px #003459;
             }
         </style>
     <nav class="navbar navbar-dark">

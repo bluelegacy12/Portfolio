@@ -8,6 +8,11 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from django.http import Http404
+from sms import send_sms
+import sms
+import smtplib
+import sys
+from django.core.mail import send_mail
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -370,4 +375,70 @@ class PrivacyChange(generic.ListView):
         else:
             performer.public_profile = True
         performer.save()
+        return redirect('getdata:profile')
+
+class SendAlert(generic.ListView):
+    template_name = 'profile.html'
+
+    """ def get_queryset(self):
+        return Performers.objects.get(username=self.request.user.username) """
+
+    """ def post(self, request):
+        user = Company.objects.get(username=self.request.user.username)
+        list = []
+        for performer in user.performers.all():
+            list += performer.phone
+
+        with sms.get_connection(fail_silently=False) as connection:
+            sms.Message('test test', 9728165504, list, connection=connection).send()
+
+        return redirect('getdata:profile') """
+
+    
+    
+    """ def send_message(phone_number, carrier, message):
+        CARRIERS = {
+            "att": "@mms.att.net",
+            "tmobile": "@tmomail.net",
+            "verizon": "@vtext.com",
+            "sprint": "@messaging.sprintpcs.com"
+        }
+        
+        EMAIL = "dylan.elza@gmail.com"
+        PASSWORD = "hivejlittdjjpyre"
+        recipient = phone_number + CARRIERS[carrier]
+        auth = (EMAIL, PASSWORD)
+    
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(auth[0], auth[1])
+    
+        server.sendmail(auth[0], recipient, message)
+    
+    
+    if __name__ == "__main__":
+        if len(sys.argv) < 4:
+            print(f"Usage: python3 {sys.argv[0]} <PHONE_NUMBER> <CARRIER> <MESSAGE>")
+            sys.exit(0)
+    
+        phone_number = "9728165504"
+        carrier = "tmobile"
+        message = "testor"
+    
+        send_message(phone_number, carrier, message) """
+
+    def post(self, request):
+        user = Company.objects.get(username=request.user.username)
+        list = []
+        for performer in user.performers.all():
+            list.append(performer.email)
+
+        send_mail(
+            "Call Time Alert",
+            request.POST.get('alert'),
+            'dylan.elza@gmail.com',
+            list,
+            fail_silently=False,
+        )
+
         return redirect('getdata:profile')

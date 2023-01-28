@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'getdata',
     'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/getdata/media/'
 LOGIN_URL = '/getdata/templates/login/'
+SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
+TWILIO_ACCOUNT_SID = 'live_redacted-twilio-account-sid'
+TWILIO_AUTH_TOKEN = 'live_redacted-twilio-auth-token'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dylan.elza@gmail.com'
+EMAIL_HOST_PASSWORD = "hivejlittdjjpyre"
+EMAIL_PORT = 587

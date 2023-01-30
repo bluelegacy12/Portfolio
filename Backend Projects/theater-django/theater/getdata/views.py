@@ -8,11 +8,22 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from django.http import Http404
-from sms import send_sms
-import sms
-import smtplib
-import sys
 from django.core.mail import send_mail
+from PyPDF2 import PdfFileWriter
+from pathlib import Path
+from getdata.utils import render_to_pdf
+from django.http import HttpResponse
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+
+import requests
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import nltk
+
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -260,6 +271,17 @@ class CallInfoView(generic.DetailView):
         context['calltimes'] = CallTime.objects.all()
         return context
 
+
+class CreatePDF(View):
+
+    def get(self, request, *args, **kwargs):
+        text = request.POST.get("schedule")
+        data = {
+             'id': 4,
+        }
+        pdf = render_to_pdf('callinfo.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
 class CallUpdate(UpdateView):
     model = CallTime
     fields = ['show_id_id', 'venue_id', 'date', 'start_time', 'end_time', 'performers', 'notes']
@@ -380,53 +402,6 @@ class PrivacyChange(generic.ListView):
 class SendAlert(generic.ListView):
     template_name = 'profile.html'
 
-    """ def get_queryset(self):
-        return Performers.objects.get(username=self.request.user.username) """
-
-    """ def post(self, request):
-        user = Company.objects.get(username=self.request.user.username)
-        list = []
-        for performer in user.performers.all():
-            list += performer.phone
-
-        with sms.get_connection(fail_silently=False) as connection:
-            sms.Message('test test', 9728165504, list, connection=connection).send()
-
-        return redirect('getdata:profile') """
-
-    
-    
-    """ def send_message(phone_number, carrier, message):
-        CARRIERS = {
-            "att": "@mms.att.net",
-            "tmobile": "@tmomail.net",
-            "verizon": "@vtext.com",
-            "sprint": "@messaging.sprintpcs.com"
-        }
-        
-        EMAIL = "dylan.elza@gmail.com"
-        PASSWORD = "hivejlittdjjpyre"
-        recipient = phone_number + CARRIERS[carrier]
-        auth = (EMAIL, PASSWORD)
-    
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(auth[0], auth[1])
-    
-        server.sendmail(auth[0], recipient, message)
-    
-    
-    if __name__ == "__main__":
-        if len(sys.argv) < 4:
-            print(f"Usage: python3 {sys.argv[0]} <PHONE_NUMBER> <CARRIER> <MESSAGE>")
-            sys.exit(0)
-    
-        phone_number = "9728165504"
-        carrier = "tmobile"
-        message = "testor"
-    
-        send_message(phone_number, carrier, message) """
-
     def post(self, request):
         user = Company.objects.get(username=request.user.username)
         list = []
@@ -440,5 +415,4 @@ class SendAlert(generic.ListView):
             list,
             fail_silently=False,
         )
-
         return redirect('getdata:profile')

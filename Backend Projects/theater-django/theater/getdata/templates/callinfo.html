@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
+<head>
+ </head>
 {% block body %}
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
+<form class="form-horizontal" action="" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a href="{% url 'getdata:schedule' %}" target="_blank" id="value" onclick="CopyText()" value="">View PDF Schedule</a> - <button type="submit" class="btn btn-primary" onclick="CopyText()">Publish Schedule</button>
+        </div>
+    </div>
+</form>
+<button class="btn btn-primary" onclick="CopyText()">Copy</button>
+<br>
+<div id="contentToPrint">
 {% if user.username == object.company.username %}
 <h1><u>{{ object.show_id_id.title }}</u> - {{ object.date }}</h1>
 {% for call in calltimes %}
@@ -50,4 +63,37 @@ Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% 
 {% endif %}
 {% endfor %}
 {% endif %}
+</div>
+<div id="text"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    window.jsPDF = window.jspdf.jsPDF;
+
+    function Convert_HTML_To_PDF() {
+        var doc = new jsPDF();
+        var elementHTML = document.querySelector("#contentToPrint");
+
+        doc.html(elementHTML, {
+            callback: function(doc) {
+                doc.save('document-html.pdf');
+            },
+            margin: [10, 10, 10, 10],
+            autoPaging: 'text',
+            x: 0,
+            y: 0,
+            width: 190,
+            windowWidth: 675
+        });
+    }
+
+    function CopyText() {
+        var text = document.getElementById('contentToPrint');
+        var new_area = document.getElementById('text');
+        new_area.innerHTML += text.innerHTML;
+
+    }
+</script>
 {% endblock %}

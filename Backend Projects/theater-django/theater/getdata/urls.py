@@ -23,6 +23,7 @@ urlpatterns = [
     path('call/add/', views.CallCreate.as_view(), name='call-add'),
     path('venue/add/', views.VenueCreate.as_view(), name='venue-add'),
     path('documents/add/', views.UploadsCreate.as_view(), name='documents-add'),
+    path('schedule/', views.CreatePDF.as_view(), name='schedule'),
     re_path(r'^showinfo/(?P<pk>[0-9]+)/$', views.ShowInfoView.as_view(), name='showinfo'),
     re_path(r'^roleinfo/(?P<pk>[0-9]+)/$', views.RoleInfoView.as_view(), name='roleinfo'),
     re_path(r'^callinfo/(?P<pk>[0-9]+)/$', views.CallInfoView.as_view(), name='callinfo'),

@@ -8,21 +8,9 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from django.http import Http404
-from django.core.mail import send_mail
-from PyPDF2 import PdfFileWriter
-from pathlib import Path
+from django.core.mail import send_mail, EmailMessage
 from getdata.utils import render_to_pdf
 from django.http import HttpResponse
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-
-import requests
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-import nltk
 
 
 all_performers = Performers.objects.all()
@@ -274,12 +262,29 @@ class CallInfoView(generic.DetailView):
 
 class CreatePDF(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         text = request.POST.get("schedule")
         data = {
              'id': 4,
         }
-        pdf = render_to_pdf('callinfo.html', data)
+        file = open("C:/Users/dylan/OneDrive/Documents/GitHub/Portfolio/Backend Projects/theater-django/theater/getdata/templates/schedule.html", "w")
+        file.seek(0)
+        file.write(text)
+        file.close()
+        pdf = render_to_pdf('schedule.html', data)
+        user = Company.objects.get(username=request.user.username)
+        list = []
+        for performer in user.performers.all():
+            list.append(performer.email)
+
+        mail = EmailMessage(
+            f"New Daily Schedule from {user.name}",
+            "Here is today's schedule!",
+            user.email,
+            list,
+        )
+        mail.attach('DailySchedule.pdf', bytes(pdf), "application/pdf")
+        mail.send()
         return HttpResponse(pdf, content_type='application/pdf')
 
 class CallUpdate(UpdateView):
@@ -409,9 +414,9 @@ class SendAlert(generic.ListView):
             list.append(performer.email)
 
         send_mail(
-            "Call Time Alert",
+            f"Call Time Alert from {user.name}",
             request.POST.get('alert'),
-            'dylan.elza@gmail.com',
+            user.email,
             list,
             fail_silently=False,
         )

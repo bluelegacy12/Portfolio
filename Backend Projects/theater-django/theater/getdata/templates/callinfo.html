@@ -5,15 +5,15 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<form class="form-horizontal" action="" method="post">
+<form class="form-horizontal" action="{% url 'getdata:schedule' %}" target="_blank" method="post">
     {% csrf_token %}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <a href="{% url 'getdata:schedule' %}" target="_blank" id="value" onclick="CopyText()" value="">View PDF Schedule</a> - <button type="submit" class="btn btn-primary" onclick="CopyText()">Publish Schedule</button>
+            <input name="schedule" id="schedule" type="text" hidden="true">
+            <button type="submit" onclick="CopyText()" class="btn btn-primary">Publish Schedule</button>
         </div>
     </div>
 </form>
-<button class="btn btn-primary" onclick="CopyText()">Copy</button>
 <br>
 <div id="contentToPrint">
 {% if user.username == object.company.username %}
@@ -25,17 +25,18 @@
 <h3>{% if call.venue_id %}
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
-Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
+Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3><br>
 {% if user.groups.all.last.name == 'Company' %}
-<form style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
+</div>
+<form class="noprint" style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
     {% csrf_token %}
     <input type="hidden" name="call_id" value="{{ call.id }}">&nbsp;
     <button type="submit" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-wrench"></span>
     </button>&nbsp;
 </form>&nbsp;
-<form style="display: inline" action="{% url 'getdata:call-delete' call.id %}">
+<form class="noprint" style="display: inline" action="{% url 'getdata:call-delete' call.id %}">
     {% csrf_token %}
     <input type="hidden" name="call_id" value="{{ call.id }}">
     <button type="submit" class="btn btn-default btn-sm">
@@ -64,36 +65,17 @@ Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% 
 {% endfor %}
 {% endif %}
 </div>
-<div id="text"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
-    window.jsPDF = window.jspdf.jsPDF;
-
-    function Convert_HTML_To_PDF() {
-        var doc = new jsPDF();
-        var elementHTML = document.querySelector("#contentToPrint");
-
-        doc.html(elementHTML, {
-            callback: function(doc) {
-                doc.save('document-html.pdf');
-            },
-            margin: [10, 10, 10, 10],
-            autoPaging: 'text',
-            x: 0,
-            y: 0,
-            width: 190,
-            windowWidth: 675
-        });
-    }
-
     function CopyText() {
-        var text = document.getElementById('contentToPrint');
-        var new_area = document.getElementById('text');
-        new_area.innerHTML += text.innerHTML;
-
+        var text = document.getElementById('contentToPrint').innerHTML;
+        // var pdf = window.open();
+        // pdf.document.write(text);
+        document.getElementById('schedule').value = text;
+        alert("PDF sent to all artists on file!")
     }
 </script>
 {% endblock %}

@@ -9,13 +9,13 @@
     {% for performer in company.performers.all %}
 {% if performer.username == user.username %}
 <div class="row" style="display: flex; margin-left: 1%; padding-left: 2%;" >
-<ul>{% for show in company.shows_set.all %}        
+<ul>{% for show in company.shows_set.all %}
         {% csrf_token %}
         <div class="column" style="float: left; width: 100%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }} - <u>{{ company }}</u></h3>
         {% for role in show.roles_set.all %}
             <li><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</li>
-        {% endfor %}  
-        </div>          
+        {% endfor %}
+        </div>
     {% endfor %}
     </ul>
 </div>
@@ -31,7 +31,7 @@
 <div class="row" style="display: flexbox; margin-left: 1%; padding-left: 2%;">
     <ul>{% for show in company.shows_set.all %}
             {% csrf_token %}
-            <div class="column" style="float: left; width: 33%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i></u>  - {{ show.show_open }}</h3>
+            <div class="column" style="float: left; width: 33%;"><h3><u><i><a href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></i>  - {{ show.show_open }}</u></h3>
             {% for role in show.roles_set.all %}
                 <li><h4><a href="{% url 'getdata:info' role.performer_id.id %}">{{ role.performer_id.name }}</a> - {{ role.name }}</h4></li>
             {% endfor %}

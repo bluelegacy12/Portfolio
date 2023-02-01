@@ -25,7 +25,7 @@
 <h3>{% if call.venue_id %}
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
-Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
+Cast Called: <ul>{% for p in call.performers.all %} <li style="display: inline-block; margin: 10px;">{{ p.name }}</li>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {% endfor %}</ul>
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3>
 {% if user.groups.all.last.name == 'Company' %}
 <form class="noprint" style="display: inline; margin-left: 5%;" action="{% url 'getdata:call-update' call.id %}">
@@ -65,8 +65,7 @@ Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% 
 <script>
     function CopyText() {
         var text = document.getElementById('contentToPrint').innerHTML;
-        // var pdf = window.open();
-        // pdf.document.write(text);
+        text += "<style> body { font-size: 150%; }</style>";
         document.getElementById('schedule').value = text;
         alert("PDF sent to all artists on file!")
     }

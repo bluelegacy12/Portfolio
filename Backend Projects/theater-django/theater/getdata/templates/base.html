@@ -5,20 +5,21 @@
         <title>Theater Scheduler</title>
         {% load static %}
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
     </head>
     <body style="text-align: left;">
         <style>
             body {
                 background: linear-gradient(90deg, #003459 0%, #003459 25%, #007EA7 100%);
                 text-align: left;
-                font: italic 16pt "Fira Sans", serif;
+                font: italic 20pt "Fira Sans", serif;
                 color: white;
                 -webkit-text-stroke: .5px white;
                 text-shadow: 3px 3px 6px #00171F;
             }
             a {
                 color: #00A8E8;
+                -webkit-text-stroke: .1px white;
             }
             input, textarea, select {
                 border: #00A8E8 solid;
@@ -36,11 +37,18 @@
             }
             h1, h2 {
                 font: bold;
+                font-size: 150%;
                 -webkit-text-stroke: 1px white;
             }
             span {
                 color: #00A8E8;
                 -webkit-text-stroke: .5px #003459;
+            }
+            h4 {
+                font-size: 125%;
+            }
+            h3 {
+                font-size: 150%;
             }
         </style>
     <nav class="navbar navbar-dark">
@@ -51,7 +59,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'getdata:home' %}">Home</a>&nbsp;
+            <a style="font-size: 20pt;" class="navbar-brand" href="{% url 'getdata:home' %}">Home</a>&nbsp;
             </div>
             {% if user.is_authenticated %}
             {% if user.groups.all.last.name == 'Company' %}

@@ -11,11 +11,16 @@ from django.http import Http404
 from django.core.mail import send_mail, EmailMessage
 from getdata.utils import render_to_pdf
 from django.http import HttpResponse
+import os
+import requests
 
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
 all_roles = Roles.objects.all()
+
+# for use with pythonanywhere.com
+# schedulename = 0
 
 class UserFormView(View):
     form_class = UserForm
@@ -267,6 +272,7 @@ class CreatePDF(View):
         data = {
              'id': 4,
         }
+        # the path for pythonanywhere.com MUST BE '/home/dylanelza/theater/getdata/templates/schedule ... etc.'
         file = open("C:/Users/dylan/OneDrive/Documents/GitHub/Portfolio/Backend Projects/theater-django/theater/getdata/templates/schedule.html", "w")
         file.seek(0)
         file.write(text)
@@ -286,6 +292,55 @@ class CreatePDF(View):
         mail.attach('DailySchedule.pdf', bytes(pdf), "application/pdf")
         mail.send()
         return HttpResponse(pdf, content_type='application/pdf')
+
+    # the following is for use on pythonanywhere.com - uses an auto reload feature to fix major bug with schedule pdfs
+    """ def post(self, request, *args, **kwargs):
+        global schedulename
+
+        user = Company.objects.get(username=request.user.username)
+        text = request.POST.get("schedule")
+        text = f'<h1 style="text-align: center;">{user.name}</h1>' + text
+        file = open("/home/dylanelza/theater/getdata/templates/schedule" + str(schedulename) + ".html", "w")
+        file.write(text)
+        file.close()
+        data = {}
+        pdf = render_to_pdf(file.name, data)
+        schedulename += 1
+        list = []
+        for performer in user.performers.all():
+            list.append(performer.email)
+
+        mail = EmailMessage(
+            f"New Daily Schedule from {user.name}",
+            "Here is today's schedule!",
+            user.email,
+            list,
+            reply_to=[user.email],
+        )
+        mail.attach('DailySchedule.pdf', bytes(pdf), "application/pdf")
+
+        if schedulename >= 10:
+            for x in range(schedulename):
+                os.remove("/home/dylanelza/theater/getdata/templates/schedule" + str(x) + ".html")
+
+            schedulename = 0
+            username = "dylanelza"
+            api_token = "aff4d5c66d1091bb59d297a1d6fc6815ebd98584"
+            domain_name = "dylanelza.pythonanywhere.com"
+
+            response = requests.post(
+                'https://www.pythonanywhere.com/api/v0/user/{username}/webapps/{domain_name}/reload/'.format(
+                    username=username, domain_name=domain_name
+                ),
+                headers={'Authorization': 'Token {token}'.format(token=api_token)}
+            )
+            if response.status_code == 200:
+                print('reloaded OK')
+            else:
+                print('Got unexpected status code {}: {!r}'.format(response.status_code, response.content))
+
+        mail.send()
+        return HttpResponse(pdf, content_type='application/pdf') """
 
 class CallUpdate(UpdateView):
     model = CallTime

@@ -101,3 +101,14 @@ class Uploads(models.Model):
 
     def __str__(self):
         return self.name
+
+class Staff(models.Model):
+    name = models.CharField(max_length=128)
+    email = models.CharField(max_length=128)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+            return reverse('getdata:staffinfo')
+
+    def __str__(self):
+        return self.name

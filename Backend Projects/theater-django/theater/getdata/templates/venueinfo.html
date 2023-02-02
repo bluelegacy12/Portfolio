@@ -3,6 +3,8 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
+<div class="container"><h1>Venue Details</h1></div>
+<div class="indent">
 {% if user.username == object.company.username %}
 <h2>
 <u>Name:</u> {{ object }} <br><br>
@@ -26,4 +28,5 @@
 </form>
 {% endif %}
 {% endif %}
+</div>
 {% endblock %}

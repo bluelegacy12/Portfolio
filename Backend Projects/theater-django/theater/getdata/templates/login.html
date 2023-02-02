@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
 <h1>Login</h1><br>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -11,4 +12,5 @@
     </div>
 </form><br><br>
 <h2>Don't have an account? <a href="{% url 'getdata:register' %}">click here</a> to sign up!</h1>
+</div>
 {% endblock %}

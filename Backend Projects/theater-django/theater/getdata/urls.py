@@ -24,6 +24,8 @@ urlpatterns = [
     path('venue/add/', views.VenueCreate.as_view(), name='venue-add'),
     path('documents/add/', views.UploadsCreate.as_view(), name='documents-add'),
     path('schedule/', views.CreatePDF.as_view(), name='schedule'),
+    path('staff/add/', views.AddStaff.as_view(), name='staff-add'),
+    path('staffinfo/', views.StaffView.as_view(), name='staffinfo'),
     re_path(r'^showinfo/(?P<pk>[0-9]+)/$', views.ShowInfoView.as_view(), name='showinfo'),
     re_path(r'^roleinfo/(?P<pk>[0-9]+)/$', views.RoleInfoView.as_view(), name='roleinfo'),
     re_path(r'^callinfo/(?P<pk>[0-9]+)/$', views.CallInfoView.as_view(), name='callinfo'),
@@ -41,4 +43,6 @@ urlpatterns = [
     re_path(r'^role/(?P<pk>[0-9]+)/$', views.RoleUpdate.as_view(), name='role-update'),
     re_path(r'^role/(?P<pk>[0-9]+)/delete/$', views.RoleDelete.as_view(), name='role-delete'),
     re_path(r'^company/(?P<pk>[0-9]+)/$', views.CompanyUpdate.as_view(), name='company-update'),
+    re_path(r'^staff/(?P<pk>[0-9]+)/$', views.StaffUpdate.as_view(), name='staff-update'),
+    re_path(r'^staff/(?P<pk>[0-9]+)/delete/$', views.StaffDelete.as_view(), name='staff-delete'),
 ]

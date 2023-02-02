@@ -5,22 +5,26 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
+{% if user.groups.all.last.name == "Company" %}
 <form class="form-horizontal" action="{% url 'getdata:schedule' %}" target="_blank" method="post">
     {% csrf_token %}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <input name="schedule" id="schedule" type="text" hidden="true">
-            <button type="submit" onclick="CopyText()" class="btn btn-primary">Publish Schedule</button>
+            <input name="showtitle" id="showtitle" type="text" hidden="true" value="{{ object.show_id_id.title }}">
+            <input name="date" id="date" type="text" hidden="true" value="{{ object.date }}">
+            <button style="font-size: 20px;" type="submit" onclick="CopyText()" class="btn btn-primary">Publish Schedule</button> - Create a pdf and send it to all staff and artists
         </div>
     </div>
 </form>
+{% endif %}
 <br>
-<div id="contentToPrint">
+<div class="indent" id="contentToPrint">
 {% if user.username == object.company.username %}
 <h1><u>{{ object.show_id_id.title }}</u> - {{ object.date }}</h1>
 {% for call in calltimes %}
 {% if call.date == object.date and call.show_id_id == object.show_id_id %}
-<hr>
+<hr style="margin-right: 10%;">
 <h2><u>{{ call.start_time }} - {{ call.end_time }}</u></h2>
 <h3>{% if call.venue_id %}
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
@@ -49,14 +53,14 @@ Cast Called: <ul>{% for p in call.performers.all %} <li style="display: inline-b
 <h1><u>{{ object.show_id_id.title }}</u> - {{ object.date }}</h1>
 {% for call in calltimes %}
 {% if call.date == object.date and call.show_id_id == object.show_id_id %}
-<hr>
+<hr style="margin-right: 10%;">
 <h2><u>{{ call.start_time }} - {{ call.end_time }}</u></h2>
 <h3>{% if call.venue_id %}
 {{ call.venue_id }} - {{ call.venue_id.location }}<br><br>
 {% endif %}
 Cast Called: <ul><br>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endfor %}</ul>
 {% if call.notes %}Notes: {{ call.notes }}{% endif %}</h3>
-{% endif %}{% endfor %}{% endif %}{% endfor %}{% endif %}
+{% endif %}{% endfor %}{% endif %}{% endfor %}{% endif %}<br><br>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>

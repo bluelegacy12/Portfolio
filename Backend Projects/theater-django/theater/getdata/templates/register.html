@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
 <h1>Create New Artist Account</h1><br>
 <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -12,4 +13,5 @@
 </form><br><br>
 <h2>To sign up as a company, <a href="{% url 'getdata:registercompany' %}">click here</a></h1>
     <h3>Company accounts have the authority to create schedules and add artists to their season.</h3>
+</div>
 {% endblock %}

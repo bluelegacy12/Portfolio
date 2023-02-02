@@ -20,3 +20,9 @@ class AddPerformerForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email']
+
+class AddStaffForm(forms.ModelForm):
+    name = forms.CharField(max_length=128)
+    class Meta:
+        model = User
+        fields = ['name', 'email']

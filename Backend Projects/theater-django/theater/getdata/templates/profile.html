@@ -3,7 +3,8 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<div style="display: flexbox;">
+<div class="container"><h1>Your Profile</h1></div>
+<div style="display: flexbox;" class="indent">
     <div style="float: left; width: 50%;">
 
 {% if user.groups.all.last.name == 'Artist' %}
@@ -14,7 +15,7 @@
             <u>Phone</u>: {{ performer.phone }}<br><br>
             <u>Username</u>: {{ performer.username }}<br><br>
             {% if performer.roles_set.all.count > 0 %}
-                <u>Roles:</u>
+                <u>Roles</u>:
                 {% for role in performer.roles_set.all %}
                     <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i>{{ role.show_id.title }}</i>{% if role != object.roles_set.all.last %},{% endif %}
                 {% endfor %}
@@ -26,15 +27,15 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary">Change Privacy</button>
+                            <button type="submit" class="btn btn-primary" style="font-size: 25px;">Change Privacy</button>
                         </div>
                     </div>
                 </form>
                 <br><h4>To hide your phone and email from other users, set Profile to Private.</h4><br>
             {% endif %}
-            
+
             {% if performer.username == user.username %}
-                <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:performer-update' performer.id %}">
+                <form style="display: inline; margin-left: 5%; padding-bottom: 10%;" action="{% url 'getdata:performer-update' performer.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="performer_id" value="{{ performer.id }}">&nbsp;
                     <button type="submit" class="btn btn-default btn-sm">
@@ -75,6 +76,7 @@
         <h2><u>Name</u>: {{ company.name }} <br><br>
             <u>Email</u>: {{ company.email }} <br><br>
             <u>Username</u>: {{ company.username }}<br><br>
+            <a href="{% url 'getdata:staffinfo' %}">View Staff</a><br><br>
             {% if company.performers.all.count > 0 %}
                 <u>Current Artists:</u></h2>
                 <h3>
@@ -83,7 +85,7 @@
                     {% for role in artist.roles_set.all %}
                         {% for show in company.shows_set.all %}
                             {% if role.show_id == show %}
-                                <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i><a href="{% url 'getdata:showinfo' role.show_id.id %}">{{ role.show_id.title }}</a></i>   
+                                <a href="{% url 'getdata:roleinfo' role.id %}">{{ role.name }}</a> - <i><a href="{% url 'getdata:showinfo' role.show_id.id %}">{{ role.show_id.title }}</a></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
@@ -95,17 +97,17 @@
                 {% endfor %}
                 </h3>
             {% endif %}
-            <h3>Send an alert to notify your cast of a new schedule posting or any other updates.</h3>
+            <h3>Send an alert to notify your cast of any updates.</h3>
             <form class="form-horizontal" action="{% url 'getdata:alert' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <textarea type="text" rows="5" cols="33" name="alert">A new schedule has been posted! View it at: dylanelza.pythonanywhere.com/getdata/home/</textarea><br>
-                        <button type="submit" class="btn btn-primary">Send Alert</button>
+                        <textarea type="text" rows="5" cols="33" name="alert">A new document has been uploaded! View it at: dylanelza.pythonanywhere.com/getdata/documents/</textarea><br>
+                        <button type="submit" onclick="Alert()" class="btn btn-primary">Send Alert</button>
                     </div>
                 </div>
             </form>
-            <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:company-update' company.id %}">
+            <form style="display: inline; margin-left: 5%; padding-bottom: 10%;" action="{% url 'getdata:company-update' company.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="company_id" value="{{ company.id }}">&nbsp;
                 <button type="submit" class="btn btn-default btn-sm">
@@ -113,8 +115,12 @@
                 </button>
             </form>&nbsp; Edit Profile
         {% endif %}
-        </div>
     {% endfor %}
 {% endif %}
 </div>
+<script>
+    function Alert() {
+        alert("An email alert has been sent to all staff and artists!");
+    }
+</script>
 {% endblock %}

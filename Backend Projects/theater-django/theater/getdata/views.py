@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import NameForm, UserForm, AddPerformerForm
-from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads, Company
+from .forms import NameForm, UserForm, AddPerformerForm, AddStaffForm
+from .models import Performers, Shows, Roles, CallTime, RehearsalVenues, Uploads, Company, Staff
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.views import generic
@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from django.http import Http404
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from getdata.utils import render_to_pdf
 from django.http import HttpResponse
 import os
@@ -156,7 +156,11 @@ class HomeView(generic.ListView):
     template_name = 'home.html'
 
     def get_queryset(self):
-        return Company.objects.all()
+        if self.request.user.groups.all().last == "Company":
+            company = Company.objects.filter(username=self.request.user.username)
+        else:
+            company = Company.objects.all()
+        return company
 
 class InfoView(generic.DetailView):
     model = Performers
@@ -280,25 +284,35 @@ class CreatePDF(View):
         pdf = render_to_pdf('schedule.html', data)
         user = Company.objects.get(username=request.user.username)
         list = []
+        bcclist = []
         for performer in user.performers.all():
             list.append(performer.email)
+
+        for staff in user.staff_set.all():
+            bcclist.append(staff.email)
 
         mail = EmailMessage(
             f"New Daily Schedule from {user.name}",
             "Here is today's schedule!",
             user.email,
             list,
+            bcclist,
+            reply_to=[user.email]
         )
         mail.attach('DailySchedule.pdf', bytes(pdf), "application/pdf")
         mail.send()
         return HttpResponse(pdf, content_type='application/pdf')
 
     # the following is for use on pythonanywhere.com - uses an auto reload feature to fix major bug with schedule pdfs
-    """ def post(self, request, *args, **kwargs):
+    """ class CreatePDF(View):
+
+    def post(self, request, *args, **kwargs):
         global schedulename
 
         user = Company.objects.get(username=request.user.username)
         text = request.POST.get("schedule")
+        current_show = request.POST.get("showtitle")
+        current_date = request.POST.get("date")
         text = f'<h1 style="text-align: center;">{user.name}</h1>' + text
         file = open("/home/dylanelza/theater/getdata/templates/schedule" + str(schedulename) + ".html", "w")
         file.write(text)
@@ -307,16 +321,25 @@ class CreatePDF(View):
         pdf = render_to_pdf(file.name, data)
         schedulename += 1
         list = []
+        bcclist = []
+
         for performer in user.performers.all():
-            list.append(performer.email)
+            for role in performer.roles_set.all():
+                if role.show_id.title == current_show:
+                    list.append(performer.email)
+
+        for staff in user.staff_set.all():
+            bcclist.append(staff.email)
 
         mail = EmailMessage(
-            f"New Daily Schedule from {user.name}",
-            "Here is today's schedule!",
+            f"{current_show} {current_date} Daily Schedule - {user.name}",
+            f"Here is the schedule for {current_date}. View it online at: dylanelza.pythonanywhere.com/getdata/home",
             user.email,
             list,
+            bcclist,
             reply_to=[user.email],
         )
+
         mail.attach('DailySchedule.pdf', bytes(pdf), "application/pdf")
 
         if schedulename >= 10:
@@ -364,7 +387,11 @@ class VenueView(generic.ListView):
     template_name = 'venues.html'
 
     def get_queryset(self):
-        return Company.objects.all()
+        if self.request.user.groups.all().last == "Company":
+            company = Company.objects.filter(username=self.request.user.username)
+        else:
+            company = Company.objects.all()
+        return company
 
 class VenueCreate(CreateView):
     model = RehearsalVenues
@@ -394,7 +421,11 @@ class UploadsView(generic.ListView):
     template_name = 'documents.html'
 
     def get_queryset(self):
-        return Company.objects.all()
+        if self.request.user.groups.all().last == "Company":
+            company = Company.objects.filter(username=self.request.user.username)
+        else:
+            company = Company.objects.all()
+        return company
 
 class UploadsCreate(CreateView):
     model = Uploads
@@ -444,6 +475,51 @@ class AddPerformer(View):
             return redirect('getdata:home')
         return render(request, self.template_name, {'form': form})
 
+class AddStaff(View):
+    form_class = AddStaffForm
+    template_name = 'create_form.html'
+
+    #display blank form
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    #register user based on input data
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            user = self.request.user
+
+            # unify the data into commit-ready format (cleaned data or normalized)
+            email = form.cleaned_data['email']
+            name = form.cleaned_data['name']
+            company = Company.objects.get(username=user.username)
+            staff = Staff()
+            staff.name = name
+            staff.email = email
+            staff.company = company
+            staff.save()
+            return redirect('getdata:staffinfo')
+        return render(request, self.template_name, {'form': form})
+
+class StaffView(generic.ListView):
+    template_name = 'staff.html'
+
+    def get_queryset(self):
+        company = Company.objects.get(username=self.request.user.username)
+        return Staff.objects.filter(company=company)
+
+class StaffUpdate(UpdateView):
+    model = Staff
+    fields = ['name', 'email']
+    template_name = 'create_form.html'
+
+class StaffDelete(DeleteView):
+    model = Staff
+    template_name = 'delete_confirm.html'
+    success_url = reverse_lazy('getdata:staffinfo')
+
 class PrivacyChange(generic.ListView):
     template_name = 'profile.html'
 
@@ -465,14 +541,20 @@ class SendAlert(generic.ListView):
     def post(self, request):
         user = Company.objects.get(username=request.user.username)
         list = []
+        bcclist = []
         for performer in user.performers.all():
             list.append(performer.email)
+        
+        for staff in user.staff_set.all():
+            bcclist.append(staff.email)
 
-        send_mail(
+        mail = EmailMessage(
             f"Call Time Alert from {user.name}",
             request.POST.get('alert'),
             user.email,
             list,
-            fail_silently=False,
+            bcclist,
+            reply_to=[user.email],
         )
+        mail.send()
         return redirect('getdata:profile')

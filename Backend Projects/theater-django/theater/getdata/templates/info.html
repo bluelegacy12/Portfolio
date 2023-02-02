@@ -3,7 +3,8 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<div style="display: flexbox;">
+<div class="container"><h1>Artist Profile</h1></div>
+<div style="display: flexbox;" class="indent">
     <div style="float: left; width: 50%;">
 
 {% if user.groups.all.last.name == 'Artist' %}

@@ -3,9 +3,13 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>Rehearsal and Performance Venues</h1>
-<hr>
+<div class="container">
+<h1>Rehearsal and Performance Venues</h1><br>
+</div>
+<div class="indent">
 {% if user.groups.all.last.name == 'Company' %}
+<h3><a href="{% url 'getdata:venue-add' %}">+ Add new venue</a></h3>
+<hr style="margin-right: 10%;">
 {% for company in object_list %}
 {% if company.username == user.username %}
 {% for venue in company.rehearsalvenues_set.all %}
@@ -26,24 +30,25 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
-<hr>
+<hr style="margin-right: 10%;">
 {% endfor %}
 {% endif %}
 {% endfor %}
-<h3><a href="{% url 'getdata:venue-add' %}">+ Add new venue</a></h3>
 {% elif user.groups.all.last.name == 'Artist' %}
+<hr style="margin-right: 10%;">
 {% for company in object_list %}
 {% for performer in company.performers.all %}
 {% if performer.username == user.username %}
-<h2><u>{{ company }}</u></h2>
+<h2><u>{{ company }}</u></h2><br>
 {% for venue in company.rehearsalvenues_set.all %}
 <h3>{{ venue.name }}</h3>
 <h4>{{ venue.location }}</h4>
 <br>
 {% endfor %}
-<hr>
+<hr style="margin-right: 10%;">
 {% endif %}
 {% endfor %}
 {% endfor %}
 {% endif %}
+</div>
 {% endblock %}

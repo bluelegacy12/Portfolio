@@ -3,9 +3,11 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
-<h1>Documents</h1>
-<hr>
+<div class="indent">
+<div class="container"><h1>Documents</h1></div><br>
 {% if user.groups.all.last.name == 'Company' %}
+<h3><a href="{% url 'getdata:documents-add' %}">+ Upload a new file</a></h3>
+<hr style="margin-right: 10%;">
 {% for company in object_list %}
 {% if company.username == user.username %}
 {% for doc in company.uploads_set.all %}
@@ -28,26 +30,27 @@
         <span class="glyphicon glyphicon-trash"></span>
     </button>
 </form>
-<hr>
+<hr style="margin-right: 10%;">
 {% endfor %}
 {% endif %}
 {% endfor %}
-<h3><a href="{% url 'getdata:documents-add' %}">+ Upload a new file</a></h3>
 {% elif user.groups.all.last.name == 'Artist' %}
+<hr style="margin-right: 10%;">
 {% for company in object_list %}
 {% for performer in company.performers.all %}
 {% if performer.username == user.username %}
-<h2><u>{{ company }}</u></h2>
+<h2><u>{{ company }}</u></h2><br>
 {% for doc in company.uploads_set.all %}
 <h3>
     <a href="{{ doc.file.url }}" target="_blank"> {{ doc.name }}</a></h3>
     <h4>{{ doc.details }}</h4>
-    
+
     <br>
 {% endfor %}
-<hr>
+<hr style="margin-right: 10%;">
 {% endif %}
 {% endfor %}
 {% endfor %}
 {% endif %}
+</div>
 {% endblock %}

@@ -5,7 +5,6 @@
         <title>Theater Scheduler</title>
         {% load static %}
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
     </head>
     <body style="text-align: left;">
         <style>
@@ -16,6 +15,10 @@
                 color: white;
                 -webkit-text-stroke: .5px white;
                 text-shadow: 3px 3px 6px #00171F;
+            }
+            nav {
+                margin-bottom: 2px; 
+                padding-bottom: 0px;
             }
             a {
                 color: #00A8E8;
@@ -49,6 +52,12 @@
             }
             h3 {
                 font-size: 150%;
+            }
+            .jumbotron {
+                background-image: linear-gradient(to right, DeepSkyBlue 0%, #007EA7 40%);
+            }
+            .indent {
+                margin-left: 3%;
             }
         </style>
     <nav class="navbar navbar-dark">
@@ -130,21 +139,25 @@
         </div>
     {% endif %}
     </nav>
-    <div style="margin-left: 2%;">
     {% if user.is_authenticated or 'user' in request.get_full_path %}
     {% block body %}
     {% endblock %}
     {% else %}
-    <div style="text-align: center;">
-    <h1><i>Call Time</i></h1>
+    <header class="jumbotron jumbotron-fluid">
+        <div style="padding-left: 10%;">
+
+            <h1><u>Call Time</u></h1>
+
+        </div>
+    </header>
+    <div class="container" style="text-align: center;">
     <br>
-    <h2>Call Time is the best way for projects involved in a dynamic daily schedule to stay organized and communicate with their cast or team. It provides an easy access tool for members to check their daily schedule and for the schedulers to make those schedules with minimal hassle!</h2>
+    <h2>Call Time is the best way for shows or projects requiring dynamic daily schedules to stay organized and communicate with their cast or team. It provides an easy access tool for members to check their daily schedule and for the schedulers to make those schedules with minimal hassle!</h2>
     <br>
     <h2><a href="{% url 'getdata:login' %}">
         <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
     </a></h2>
     </div>
     {% endif %}
-    </div>
     </body>
 </html>

@@ -3,15 +3,16 @@
 {% if error_message %}
     <h1>{{ error_message }}</h1>
 {% endif %}
+<div class="container"><h1>Show Details</h1></div>
 {% for p in object.company.performers.all %}
 {% if p.username == user.username %}
-<div style="display: flexbox;">
+<div style="display: flexbox;" class="indent">
 <div style="float: left; width: 50%;">
 <h2>
-    <u>Title:</u> {{ object.title }} <br><br>
-    <u>Rehearsal Start Date:</u> {{ object.rehearsal_start }} <br><br>
-<u>Show Opens:</u> {{ object.show_open }}<br><br>
-<u>Director:</u> {{ object.director_id.name }}
+    <u>Title</u>: {{ object.title }} <br><br>
+    <u>Rehearsal Start Date</u>: {{ object.rehearsal_start }} <br><br>
+<u>Show Opens</u>: {{ object.show_open }}<br><br>
+<u>Director</u>: {{ object.director_id.name }}
 </h2>
 <br>
 {% if object.calltime_set.all.count > 0 %}
@@ -28,7 +29,7 @@
 <h3>{{ object.calltime_set.all.last.date }}</h3>
 {% for call in object.calltime_set.all %}
 {% if call.date == object.calltime_set.all.last.date %}
-<hr>
+<hr style="margin-right: 10%;">
 <h3>{{ call.start_time }} - {{ call.end_time }}</h3>
 {% if call.venue_id %}
 <u>{{ call.venue_id }}</u> - {{ call.venue_id.location }}<br>
@@ -46,14 +47,14 @@ Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endf
 {% endfor %}
 
 <!-- same code as above but with some company permissions-->
-{% if object.company.username == user.username %} 
-<div style="display: flexbox;">
+{% if object.company.username == user.username %}
+<div style="display: flexbox;" class="indent">
     <div style="float: left; width: 50%;">
     <h2>
-        <u>Title:</u> {{ object.title }} <br><br>
-        <u>Rehearsal Start Date:</u> {{ object.rehearsal_start }} <br><br>
-    <u>Show Opens:</u> {{ object.show_open }}<br><br>
-    <u>Director:</u> {{ object.director_id.name }}
+        <u>Title</u>: {{ object.title }} <br><br>
+        <u>Rehearsal Start Date</u>: {{ object.rehearsal_start }} <br><br>
+    <u>Show Opens</u>: {{ object.show_open }}<br><br>
+    <u>Director</u>: {{ object.director_id.name }}
     </h2>
     <br>
     {% if object.calltime_set.all.count > 0 %}
@@ -86,7 +87,7 @@ Cast Called: <ul>{% for p in call.performers.all %} <li>{{ p.name }}</li>{% endf
     <h3>{{ object.calltime_set.all.last.date }}</h3>
     {% for call in object.calltime_set.all %}
     {% if call.date == object.calltime_set.all.last.date %}
-    <hr>
+    <hr style="margin-right: 10%;">
     <h3>{{ call.start_time }} - {{ call.end_time }}</h3>
     {% if call.venue_id %}
     <u>{{ call.venue_id }}</u> - {{ call.venue_id.location }}<br>

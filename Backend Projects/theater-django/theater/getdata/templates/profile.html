@@ -107,13 +107,21 @@
                     </div>
                 </div>
             </form>
-            <form style="display: inline; margin-left: 5%; padding-bottom: 10%;" action="{% url 'getdata:company-update' company.id %}">
+            <br>
+            <form style="display: inline; margin-left: 5%; padding: 1%; border: 3px solid #00A8E8; border-radius: 3px;" action="{% url 'getdata:company-update' company.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="company_id" value="{{ company.id }}">&nbsp;
                 <button type="submit" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-wrench"></span>
-                </button>
-            </form>&nbsp; Edit Profile
+                </button>&nbsp; Edit Profile 
+            </form>&nbsp;
+            <form style="display: inline; margin-left: 5%; padding: 1%; border: 3px solid #00A8E8; border-radius: 3px;" action="{% url 'getdata:companyperformers-update' company.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="company_id" value="{{ company.id }}">&nbsp;
+                <button type="submit" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                </button> Edit Performer List
+            </form><br><br>
         {% endif %}
     {% endfor %}
 {% endif %}

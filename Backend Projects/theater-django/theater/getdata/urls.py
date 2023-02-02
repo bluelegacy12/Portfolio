@@ -43,6 +43,7 @@ urlpatterns = [
     re_path(r'^role/(?P<pk>[0-9]+)/$', views.RoleUpdate.as_view(), name='role-update'),
     re_path(r'^role/(?P<pk>[0-9]+)/delete/$', views.RoleDelete.as_view(), name='role-delete'),
     re_path(r'^company/(?P<pk>[0-9]+)/$', views.CompanyUpdate.as_view(), name='company-update'),
+    re_path(r'^company/(?P<pk>[0-9]+)/performers$', views.CompanyPerformersUpdate.as_view(), name='companyperformers-update'),
     re_path(r'^staff/(?P<pk>[0-9]+)/$', views.StaffUpdate.as_view(), name='staff-update'),
     re_path(r'^staff/(?P<pk>[0-9]+)/delete/$', views.StaffDelete.as_view(), name='staff-delete'),
 ]

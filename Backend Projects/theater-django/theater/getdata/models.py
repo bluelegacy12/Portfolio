@@ -77,9 +77,9 @@ class Conflicts(models.Model):
 class CallTime(models.Model):
     show_id_id = models.ForeignKey(Shows, on_delete=models.CASCADE)
     venue_id = models.ForeignKey(RehearsalVenues, on_delete=models.SET_NULL, null=True)
-    date = models.DateField(null=False, default="1/1/2023 ")
-    start_time = models.TimeField(null=False, default="10:00 ")
-    end_time = models.TimeField(null=False, default="13:00 ")
+    date = models.DateField(null=False)
+    start_time = models.TimeField(null=False)
+    end_time = models.TimeField(null=False)
     performers = models.ManyToManyField(Performers)
     notes = models.TextField(null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)

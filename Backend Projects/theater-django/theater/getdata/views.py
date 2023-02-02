@@ -13,7 +13,7 @@ from getdata.utils import render_to_pdf
 from django.http import HttpResponse
 import os
 import requests
-
+from django import forms
 
 all_performers = Performers.objects.all()
 all_shows = Shows.objects.all()
@@ -102,15 +102,25 @@ class CompanyFormView(View):
 
 class CompanyUpdate(UpdateView):
     model = Company
-    fields = [ 'email', 'performers']
+    fields = [ 'email']
     template_name = 'create_form.html'
 
     def get_form(self, *args, **kwargs):
         form = super(CompanyUpdate, self).get_form(*args, **kwargs)
         c = Company.objects.get(username=self.request.user.username)
-        form.fields['performers'].queryset = c.performers
+
         return form
 
+class CompanyPerformersUpdate(UpdateView):
+    model = Company
+    fields = [ 'performers']
+    template_name = 'create_form.html'
+
+    def get_form(self, *args, **kwargs):
+        form = super(CompanyPerformersUpdate, self).get_form(*args, **kwargs)
+        c = Company.objects.get(username=self.request.user.username)
+        form.fields['performers'].queryset = c.performers
+        return form
 
 def ChangeShowPerformers(self):
     c = Company.objects.get(username=self.request.user.username)
@@ -133,6 +143,8 @@ class ShowCreate(CreateView):
         form = super(ShowCreate, self).get_form(*args, **kwargs)
         c = Company.objects.get(username=self.request.user.username)
         form.fields['director_id'].queryset = c.performers
+        form.fields['rehearsal_start'].widget = forms.DateInput(attrs={'type':'date'})
+        form.fields['show_open'].widget = forms.DateInput(attrs={'type':'date'})
         return form
 
     def get_context_data(self, **kwargs):
@@ -217,6 +229,8 @@ class ShowUpdate(UpdateView):
         form = super(ShowUpdate, self).get_form(*args, **kwargs)
         c = Company.objects.get(username=self.request.user.username)
         form.fields['director_id'].queryset = c.performers
+        form.fields['rehearsal_start'].widget = forms.DateInput(attrs={'type':'date'})
+        form.fields['show_open'].widget = forms.DateInput(attrs={'type':'date'})
         return form
 
 class ShowDelete(DeleteView):
@@ -252,6 +266,9 @@ class CallCreate(CreateView):
         form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
         form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
         form.fields['performers'].queryset = c.performers
+        form.fields['date'].widget = forms.DateInput(attrs={'type':'date'})
+        form.fields['start_time'].widget = forms.TimeInput(attrs={'type':'time'})
+        form.fields['end_time'].widget = forms.TimeInput(attrs={'type':'time'})
         return form
 
     def get_context_data(self, **kwargs):
@@ -376,6 +393,9 @@ class CallUpdate(UpdateView):
         form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
         form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
         form.fields['performers'].queryset = c.performers
+        form.fields['date'].widget = forms.DateInput(attrs={'type':'date'})
+        form.fields['start_time'].widget = forms.TimeInput(attrs={'type':'time'})
+        form.fields['end_time'].widget = forms.TimeInput(attrs={'type':'time'})
         return form
 
 class CallDelete(DeleteView):

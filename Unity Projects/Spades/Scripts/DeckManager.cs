@@ -42,8 +42,20 @@ public class DeckManager : NetworkBehaviour
     public int p3Points = 0;
     [SyncVar]
     public int p4Points = 0;
+    [SyncVar]
+    public int team13Points = 0;
+    [SyncVar]
+    public int team24Points = 0;
+    [SyncVar]
+    public int team13Bags = 0;
+    [SyncVar]
+    public int team24Bags = 0;
     public TMPro.TextMeshProUGUI team13Guess;
     public TMPro.TextMeshProUGUI team24Guess;
+    public TMPro.TextMeshProUGUI team13PointsText;
+    public TMPro.TextMeshProUGUI team24PointsText;
+    public TMPro.TextMeshProUGUI team13BagsText;
+    public TMPro.TextMeshProUGUI team24BagsText;
     public List<Card> discardList = new List<Card>();
     [SyncVar]
     public int discardListValue;
@@ -64,11 +76,12 @@ public class DeckManager : NetworkBehaviour
     public GameObject guessCounter;
     public GameObject guessButton;
     public GameObject guessText;
+    public GameObject readyButton;
     public bool textHold = false;
     [SyncVar]
     public bool spadesPlayed = false;
     [SyncVar]
-    public bool spades = false;
+    public bool spades = false; //true or false if spades has been broken
     [SyncVar]
     public bool waitForNext = true;
     [SyncVar]
@@ -81,6 +94,8 @@ public class DeckManager : NetworkBehaviour
     public int p3Guess;
     [SyncVar]
     public int p1p3Total;
+    [SyncVar]
+    public int p2p4Total;
 
     // Start is called before the first frame update
     void Start()
@@ -129,10 +144,13 @@ public class DeckManager : NetworkBehaviour
         if (firstTurn && !waitForNext)
         {
             team13Guess.text = "Team 1&3 Guess: " + (p1p3Total).ToString();
+            team24Guess.text = "Team 2&4 Guess: " + p2p4Total.ToString();
             amountOfGuessers = 0;
         }
         if (readyPlayers == 2 && isServer)
         {
+            team13Guess.text = "Team 1&3 Guess: 0";
+            team24Guess.text = "Team 2&4 Guess: 0";
             readyPlayers = 3;
             playerReconnect = readyPlayers;
             ShuffleAndDeal();
@@ -175,6 +193,43 @@ public class DeckManager : NetworkBehaviour
                     break;
                 }
             }
+            
+            // ai guessing logic
+            int p2guess = 0;
+            int p2spadeCount = 0;
+            foreach (Card c in player2Hand)
+            {
+                if (c.value > 12 || (c.suit == "spades" && c.value > 8))
+                {
+                    p2guess += 1;
+                    if (c.suit =="spades")
+                    {
+                        p2spadeCount += 1;
+                    }
+                }
+            }
+            if (p2spadeCount > 3)
+            {
+                p2guess -= 1;
+            }
+            int p4guess = 0;
+            int p4spadeCount = 0;
+            foreach (Card c in player4Hand)
+            {
+                if (c.value > 12 || (c.suit == "spades" && c.value > 8))
+                {
+                    p4guess += 1;
+                    if (c.suit =="spades")
+                    {
+                        p4spadeCount += 1;
+                    }
+                }
+            }
+            if (p4spadeCount > 3)
+            {
+                p4guess -= 1;
+            }
+            p2p4Total = p2guess + p4guess;
         }
      /*    if (readyPlayers > playerReconnect)
         {
@@ -217,10 +272,58 @@ public class DeckManager : NetworkBehaviour
         }
         if (turnCount == 4)
         {
+            Debug.Log(player2Hand.Count + "in p2 hand");
+            Debug.Log(player1Hand.Count + "in p1 hand");
             turnCount = 5;
             waitForNext = true;
             UpdateServerPoints(winningPlayer);
-            if (isServer)
+
+            // calc points at end of each round
+            if (player2Hand.Count == 0)
+            {
+                if (isServer)
+                {
+                    if (p1Points + p3Points >= p1p3Total)
+                    {
+                        team13Points += p1p3Total * 10;
+                        if (p1Points + p3Points > p1p3Total)
+                        {
+                            team13Bags += (p1Points + p3Points) - p1p3Total;
+                        }
+                        team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
+                        team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
+                        updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
+                        if (team13Bags >= 10)
+                        {
+                            team13Bags -= 10;
+                            team13Points -= 100;
+                        }
+                    }
+                    else
+                    {
+                        updateText.text = "Your team busted! No points were earned this round.";
+                    }
+                    if (p2Points + p4Points >= p2p4Total)
+                    {
+                        team24Points += p2p4Total * 10;
+                        if (p2Points + p4Points > p2p4Total)
+                        {
+                            team24Bags += (p2Points + p4Points) - p2p4Total;
+                        }
+                        team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
+                        team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
+                        if (team24Bags >= 10)
+                        {
+                            team24Bags -= 10;
+                            team24Points -= 100;
+                        }
+                    }
+                }
+                readyPlayers = 0;
+                amountOfGuessers = 0;
+                readyButton.SetActive(true);
+            }
+            else if (isServer)
             {
                 nextTurnButton.SetActive(true);
             }
@@ -279,12 +382,7 @@ public class DeckManager : NetworkBehaviour
                     {
                         if (currentCard.value < c.value)
                         {
-                            if (c.suit == "spades" && spades)
-                            {
-                                currentCard = c;
-                                cardFound = true;
-                            }
-                            if (c.suit != "spades")
+                            if (c.suit == "spades" && spades || c.suit != "spades")
                             {
                                 currentCard = c;
                                 cardFound = true;
@@ -341,6 +439,10 @@ public class DeckManager : NetworkBehaviour
                     winningPlayer = turnIndex;
                     suitDisplay.GetComponent<Image>().sprite = newCard.GetComponent<Image>().sprite;
                     suitDisplay.SetActive(true);
+                    if (leadingSuit == "spades")
+                    {
+                        spadesPlayed = true;
+                    }
                 }
                 else
                 {

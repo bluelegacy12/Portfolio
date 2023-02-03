@@ -374,6 +374,10 @@ public class Player : NetworkBehaviour
                     DeckManager.deckManager.winningPlayer = DeckManager.deckManager.turnIndex;
                     DeckManager.deckManager.suitDisplay.GetComponent<Image>().sprite = card.GetComponent<Image>().sprite;
                     DeckManager.deckManager.suitDisplay.gameObject.SetActive(true);
+                    if (DeckManager.deckManager.leadingSuit == "spades")
+                    {
+                        DeckManager.deckManager.spadesPlayed = true;
+                    }
                 }
                 else
                 {

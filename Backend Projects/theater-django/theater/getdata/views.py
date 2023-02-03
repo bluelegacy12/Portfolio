@@ -119,7 +119,10 @@ class CompanyPerformersUpdate(UpdateView):
     def get_form(self, *args, **kwargs):
         form = super(CompanyPerformersUpdate, self).get_form(*args, **kwargs)
         c = Company.objects.get(username=self.request.user.username)
-        form.fields['performers'].queryset = c.performers
+        form.fields['performers'] = forms.ModelMultipleChoiceField(
+                        queryset=c.performers.order_by('name'),
+                        label="Performers",
+                        widget=forms.CheckboxSelectMultiple)
         return form
 
 def ChangeShowPerformers(self):
@@ -266,6 +269,10 @@ class CallCreate(CreateView):
         form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
         form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
         form.fields['performers'].queryset = c.performers
+        form.fields['performers'] = forms.ModelMultipleChoiceField(
+                        queryset=c.performers.order_by('name'),
+                        label="Performers",
+                        widget=forms.CheckboxSelectMultiple)
         form.fields['date'].widget = forms.DateInput(attrs={'type':'date'})
         form.fields['start_time'].widget = forms.TimeInput(attrs={'type':'time'})
         form.fields['end_time'].widget = forms.TimeInput(attrs={'type':'time'})
@@ -274,6 +281,7 @@ class CallCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(CallCreate, self).get_context_data(**kwargs)
         context['companies'] = Company.objects.all()
+        context['comp'] = Company.objects.get(username=self.request.user.username)
         return context
 
 class CallInfoView(generic.DetailView):
@@ -392,7 +400,10 @@ class CallUpdate(UpdateView):
         c = Company.objects.get(username=self.request.user.username)
         form.fields['show_id_id'].queryset = Shows.objects.filter(company=c.id)
         form.fields['venue_id'].queryset = RehearsalVenues.objects.filter(company=c.id)
-        form.fields['performers'].queryset = c.performers
+        form.fields['performers'] = forms.ModelMultipleChoiceField(
+                        queryset=c.performers.order_by('name'),
+                        label="Performers",
+                        widget=forms.CheckboxSelectMultiple)
         form.fields['date'].widget = forms.DateInput(attrs={'type':'date'})
         form.fields['start_time'].widget = forms.TimeInput(attrs={'type':'time'})
         form.fields['end_time'].widget = forms.TimeInput(attrs={'type':'time'})

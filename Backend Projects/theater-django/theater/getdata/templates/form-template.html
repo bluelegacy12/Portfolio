@@ -18,19 +18,14 @@
             <span class="text-danger small">{{ field.errors }}</span>
         </div>
         <!-- This is terrible. Will def set myself up better in the models next time-->
-        {% if field.name != "performers" %}
-        <label class="control-label col-sm-2">{% if "show_id" in field.label_tag %} Show: 
+        <label class="control-label col-sm-2">{% if "show_id" in field.label_tag %} Show:
             {% elif "performer_id" in field.label_tag %} Performer:
             {% elif "role_id" in field.label_tag %} Role:
             {% elif "director_id" in field.label_tag %} Director:
             {% elif "venue_id" in field.label_tag %} Venue:
             {% else %} {{ field.label_tag }} {% endif %}</label>
-        <div class="col-sm-1">{{ field }}</div>
-        {% else %}
-        <label class="control-label col-sm-2">Performers: </label>
-        <div class="col-sm-1">{{ field }}</div>&nbsp;<div style="width: 60%; font-size: 70%;">On desktop, hold the 'shift' key to select multiple in a row, or 'ctrl' key to select specific options. Unselected names will be removed.</div>
-        {% endif %}
+        <div class="col-sm-2">{{ field }}</div>
+ 
     </div>
-    
 {% endif %}
 {% endfor %}

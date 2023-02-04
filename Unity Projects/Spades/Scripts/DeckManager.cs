@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 using static Player;
+using System.Linq;
 
 public class DeckManager : NetworkBehaviour
 {
@@ -76,7 +77,7 @@ public class DeckManager : NetworkBehaviour
     public GameObject guessCounter;
     public GameObject guessButton;
     public GameObject guessText;
-    public GameObject readyButton;
+    public GameObject nextRoundButton;
     public bool textHold = false;
     [SyncVar]
     public bool spadesPlayed = false;
@@ -96,6 +97,10 @@ public class DeckManager : NetworkBehaviour
     public int p1p3Total;
     [SyncVar]
     public int p2p4Total;
+    public TMPro.TextMeshProUGUI p1PointsText;
+    public TMPro.TextMeshProUGUI p2PointsText;
+    public TMPro.TextMeshProUGUI p3PointsText;
+    public TMPro.TextMeshProUGUI p4PointsText;
 
     // Start is called before the first frame update
     void Start()
@@ -103,6 +108,7 @@ public class DeckManager : NetworkBehaviour
         deckManager = this;
         waitForNext = true;
         nextTurnButton.SetActive(false);
+        nextRoundButton.SetActive(false);
         suitDisplay.SetActive(false);
         startButton.SetActive(true);
         guessCounter.SetActive(false);
@@ -136,6 +142,14 @@ public class DeckManager : NetworkBehaviour
 
     void Update()
     {
+        if (readyPlayers == 3 && !guessButton.activeSelf)
+        {
+            updateText.text = "Waiting for other players";
+        }
+        if (guessButton.activeSelf)
+        {
+            updateText.text = "How many books do you think you can win?";
+        }
         if (amountOfGuessers == 2 && isServer)
         {
             p1p3Total = Player.player.guessNumber + p3Guess;
@@ -143,21 +157,33 @@ public class DeckManager : NetworkBehaviour
         }
         if (firstTurn && !waitForNext)
         {
-            team13Guess.text = "Team 1&3 Guess: " + (p1p3Total).ToString();
+            team13Guess.text = "Team 1&3 Guess: " + p1p3Total.ToString();
             team24Guess.text = "Team 2&4 Guess: " + p2p4Total.ToString();
             amountOfGuessers = 0;
+            readyPlayers = 0;
         }
-        if (readyPlayers == 2 && isServer)
+        if (readyPlayers == 2)
         {
             team13Guess.text = "Team 1&3 Guess: 0";
             team24Guess.text = "Team 2&4 Guess: 0";
+            p1Points = 0;
+            p2Points = 0;
+            p3Points = 0;
+            p4Points = 0;
+            p1PointsText.text = "P1 Books: 0";
+            p2PointsText.text = "P2 Books: 0";
+            p3PointsText.text = "P3 Books: 0";
+            p4PointsText.text = "P4 Books: 0";
             readyPlayers = 3;
             playerReconnect = readyPlayers;
-            ShuffleAndDeal();
-            ServerUpdateP3Hand();
-            ClientUpdateP3Hand();
-            SpawnP3Hand();
-            Player.player.DealHandP3();
+            if (isServer)
+            {
+                ShuffleAndDeal();
+                ServerUpdateP3Hand();
+                ClientUpdateP3Hand();
+                SpawnP3Hand();
+                Player.player.DealHandP3();
+            }
             startButton.SetActive(false);
 
             // player with 2 of clubs goes first
@@ -258,22 +284,25 @@ public class DeckManager : NetworkBehaviour
         if ((isServer && turnIndex == 0) || (!isServer && turnIndex == 2))
         {
             if (waitForNext || textHold){return;}
+            GameObject.Find("P3 Books").GetComponent<TMPro.TextMeshProUGUI>().text = "P3 Books: " + p3Points.ToString();
             updateText.text = "Your turn!";
         }
         if ((isServer && turnIndex == 2) || (!isServer && turnIndex == 0))
         {
             if (waitForNext || textHold){return;}
+            GameObject.Find("P3 Books").GetComponent<TMPro.TextMeshProUGUI>().text = "P3 Books: " + p3Points.ToString();
             updateText.text = "It's your partner's turn";
         }
         if (turnIndex == 1 || turnIndex == 3)
         {
+            SyncClientPoints();
             if (waitForNext || textHold){return;}
+            GameObject.Find("P3 Books").GetComponent<TMPro.TextMeshProUGUI>().text = "P3 Books: " + p3Points.ToString();
             updateText.text = "Player " + (turnIndex + 1) + "'s turn";
+
         }
         if (turnCount == 4)
         {
-            Debug.Log(player2Hand.Count + "in p2 hand");
-            Debug.Log(player1Hand.Count + "in p1 hand");
             turnCount = 5;
             waitForNext = true;
             UpdateServerPoints(winningPlayer);
@@ -319,16 +348,31 @@ public class DeckManager : NetworkBehaviour
                         }
                     }
                 }
+                // destroy loose card gameobjects
+                foreach (GameObject c in GameObject.FindGameObjectsWithTag("Card"))
+                {
+                    Destroy(c);
+                }
+                foreach (GameObject c in GameObject.FindGameObjectsWithTag("Discard"))
+                {
+                    Destroy(c);
+                }
+                foreach (GameObject c in Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "New Game Object"))
+                {
+                    Destroy(c);
+                }
+                ClientNextRound();
+                nextRoundButton.SetActive(true);
                 readyPlayers = 0;
                 amountOfGuessers = 0;
-                readyButton.SetActive(true);
+                firstTurn = true;
             }
             else if (isServer)
             {
                 nextTurnButton.SetActive(true);
             }
         }
-        if (turnCount == 5)
+        if (turnCount == 5 && !firstTurn)
         {
             UpdateClientPoints(winningPlayer);
         }
@@ -667,6 +711,40 @@ public class DeckManager : NetworkBehaviour
         }
     }
 
+    public void SyncClientPoints()
+    {
+        p1PointsText.text = "P1 Books: " + p1Points.ToString();
+        p2PointsText.text = "P2 Books: " + p2Points.ToString();
+        p3PointsText.text = "P3 Books: " + p3Points.ToString();
+        p4PointsText.text = "P4 Books: " + p4Points.ToString();
+    }
+
+    [ClientRpc]
+    public void ClientNextRound()
+    {
+        nextRoundButton.SetActive(true);
+        foreach (GameObject c in Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "New Game Object"))
+        {
+            Destroy(c);
+        }
+        
+        if (p1Points + p3Points >= p1p3Total)
+        {
+            team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
+            team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
+            updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
+        }
+        else
+        {
+            updateText.text = "Your team busted! No points were earned this round.";
+        }
+        team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
+        team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
+        nextRoundButton.SetActive(true);
+        readyPlayers = 0;
+        amountOfGuessers = 0;
+        firstTurn = true;
+    }
 
     public class Card
     {

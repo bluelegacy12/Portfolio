@@ -467,7 +467,6 @@ public class Player : NetworkBehaviour
     public void ApplyGuess()
     {
         int.TryParse(DeckManager.deckManager.guessText.GetComponent<TMPro.TextMeshProUGUI>().text, out guessNumber);
-        Debug.Log(guessNumber);
         DeckManager.deckManager.guessButton.SetActive(false);
         DeckManager.deckManager.guessCounter.SetActive(false);
         DeckManager.deckManager.guessText.SetActive(false);

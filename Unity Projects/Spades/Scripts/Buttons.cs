@@ -13,6 +13,7 @@ public class Buttons : NetworkBehaviour
 
     public void ReadyButton()
     {
+        DeckManager.deckManager.updateText.text = "Waiting for other players";
         if (Player.player.isServer)
         {
             Player.player.ReadyServer();

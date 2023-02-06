@@ -120,28 +120,29 @@ public class DeckManager : NetworkBehaviour
         discard4 = GameObject.Find("Discard4");
         guessText = GameObject.Find("Guess Number");
         nm = GameObject.Find("Network Manager");
-        foreach (string s in suitArr)
-        {
-            for (int i = 2; i <= 14; i++)
-            {
-                Card tempCard = new Card();
-                tempCard.value = i;
-                tempCard.suit = s;
-                foreach (Sprite sp in cardFace)
-                {
-                    if (sp.name == i + s)
-                    {
-                        tempCard.image = sp;
-                        tempCard.imageName = i.ToString() + s;
-                    }
-                }
-                deck.Add(tempCard);
-            }
-        }
     }
 
     void Update()
     {
+        if (nextRoundButton.activeSelf)
+        {
+            if (p1Points + p3Points >= p1p3Total)
+            {
+                player3values.Clear();
+                player3suits.Clear();
+                player3imageName.Clear();
+                team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
+                team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
+                updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
+            }
+            else
+            {
+                updateText.text = "Your team busted! No points were earned this round.";
+            }
+            team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
+            team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
+        }
+
         if (readyPlayers == 3 && !guessButton.activeSelf)
         {
             updateText.text = "Waiting for other players";
@@ -176,6 +177,18 @@ public class DeckManager : NetworkBehaviour
             p4PointsText.text = "P4 Books: 0";
             readyPlayers = 3;
             playerReconnect = readyPlayers;
+            foreach (GameObject c in GameObject.FindGameObjectsWithTag("Discard"))
+            {
+                Destroy(c);
+            }
+            foreach (GameObject c in GameObject.FindGameObjectsWithTag("Card"))
+            {
+                Destroy(c);
+            }
+            foreach (GameObject c in Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "New Game Object"))
+            {
+                Destroy(c);
+            }
             if (isServer)
             {
                 ShuffleAndDeal();
@@ -308,7 +321,7 @@ public class DeckManager : NetworkBehaviour
             UpdateServerPoints(winningPlayer);
 
             // calc points at end of each round
-            if (player2Hand.Count == 0)
+            if (Player.player.playerHand.transform.childCount == 0)
             {
                 if (isServer)
                 {
@@ -348,19 +361,7 @@ public class DeckManager : NetworkBehaviour
                         }
                     }
                 }
-                // destroy loose card gameobjects
-                foreach (GameObject c in GameObject.FindGameObjectsWithTag("Card"))
-                {
-                    Destroy(c);
-                }
-                foreach (GameObject c in GameObject.FindGameObjectsWithTag("Discard"))
-                {
-                    Destroy(c);
-                }
-                foreach (GameObject c in Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "New Game Object"))
-                {
-                    Destroy(c);
-                }
+              
                 ClientNextRound();
                 nextRoundButton.SetActive(true);
                 readyPlayers = 0;
@@ -571,6 +572,30 @@ public class DeckManager : NetworkBehaviour
             return;
         }        
         List<Card> tempDeck = new List<Card>();
+        deck.Clear();
+        discardList.Clear();
+        player1Hand.Clear();
+        player2Hand.Clear();
+        player3Hand.Clear();
+        player4Hand.Clear();
+        foreach (string s in suitArr)
+        {
+            for (int i = 2; i <= 14; i++)
+            {
+                Card tempCard = new Card();
+                tempCard.value = i;
+                tempCard.suit = s;
+                foreach (Sprite sp in cardFace)
+                {
+                    if (sp.name == i + s)
+                    {
+                        tempCard.image = sp;
+                        tempCard.imageName = i.ToString() + s;
+                    }
+                }
+                deck.Add(tempCard);
+            }
+        }
         while (deck.Count > 0)
         {
             int index = UnityEngine.Random.Range(0, deck.Count);
@@ -722,28 +747,15 @@ public class DeckManager : NetworkBehaviour
     [ClientRpc]
     public void ClientNextRound()
     {
-        nextRoundButton.SetActive(true);
-        foreach (GameObject c in Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "New Game Object"))
-        {
-            Destroy(c);
-        }
-        
-        if (p1Points + p3Points >= p1p3Total)
-        {
-            team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
-            team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
-            updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
-        }
-        else
-        {
-            updateText.text = "Your team busted! No points were earned this round.";
-        }
-        team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
-        team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
-        nextRoundButton.SetActive(true);
+        nextRoundButton.SetActive(true);        
         readyPlayers = 0;
         amountOfGuessers = 0;
         firstTurn = true;
+        deck.Clear();
+        player1Hand.Clear();
+        player2Hand.Clear();
+        player3Hand.Clear();
+        player4Hand.Clear();
     }
 
     public class Card

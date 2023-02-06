@@ -13,7 +13,6 @@ public class Player : NetworkBehaviour
     public GameObject discard3;
     public GameObject discard4;
     public GameObject[] discards;
-    public List<GameObject> discardCards = new List<GameObject>();
     public GameObject playerHand;
     public List<Card> discardList = new List<Card>();
     public int discardValue;
@@ -39,17 +38,6 @@ public class Player : NetworkBehaviour
         discard4 = GameObject.Find("Discard4");
         guessButton = GameObject.Find("Submit Guess"); 
         slider = GameObject.Find("Guess Counter");
-        if (DeckManager.deckManager.readyPlayers > 2)
-        {
-            discards = GameObject.FindGameObjectsWithTag("Card");
-            foreach (GameObject c in discards)
-            {
-                if (c.transform.parent = null)
-                {
-                    Destroy(c);
-                }
-            }
-        }
     }
 
     void Update()
@@ -102,7 +90,7 @@ public class Player : NetworkBehaviour
             for (int i = 0; i < player3Hand.Count; i++)
             {
                 CardBehavior card = looseCardObjects[i].GetComponent<CardBehavior>();
-                card.transform.SetParent(playerHand.transform);
+                card.transform.SetParent(playerHand.transform); // issue is here somehow
                 card.transform.localScale = new Vector3(1, 1, 1);
                 card.value = player3Hand[i].value;
                 card.suit = player3Hand[i].suit;
@@ -115,6 +103,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void UpdateDiscards(int value, string suit, int index)
     {
+        if (DeckManager.deckManager.firstTurn)
+        {
+            return;
+        }
         discards = GameObject.FindGameObjectsWithTag("Discard");
         GameObject emptyCard = new GameObject();
         foreach (GameObject c in discards)

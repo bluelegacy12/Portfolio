@@ -13,16 +13,17 @@ public class Buttons : NetworkBehaviour
 
     public void ReadyButton()
     {
+        transform.gameObject.SetActive(false);
         DeckManager.deckManager.updateText.text = "Waiting for other players";
         if (Player.player.isServer)
         {
             Player.player.ReadyServer();
+            DeckManager.deckManager.goalInput.SetActive(false);
         }
         else
         {
             Player.player.ReadyClient();
         }
-        transform.gameObject.SetActive(false);
     }
     
     public void GuessButton()

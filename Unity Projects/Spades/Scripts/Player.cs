@@ -235,9 +235,20 @@ public class Player : NetworkBehaviour
                 }
                 if (suit == "spades" && !DeckManager.deckManager.spades && DeckManager.deckManager.turnCount == 0)
                 {
-                    DeckManager.deckManager.textHold = true;
-                    DeckManager.deckManager.updateText.text = "Invalid play! Spades have not been broken yet.";
-                    return;
+                    int numOfSpades = 0;
+                    foreach (Transform c in playerHand.transform)
+                    {
+                        if (c.GetComponent<CardBehavior>().suit == "spades")
+                        {
+                            numOfSpades += 1;
+                        }
+                    }
+                    if (numOfSpades != playerHand.transform.childCount)
+                    {
+                        DeckManager.deckManager.textHold = true;
+                        DeckManager.deckManager.updateText.text = "Invalid play! Spades have not been broken yet.";
+                        return;
+                    }
                 }
                 if (DeckManager.deckManager.firstTurn)
                 {
@@ -310,9 +321,20 @@ public class Player : NetworkBehaviour
                     }
                     if (card.GetComponent<CardBehavior>().suit == "spades" && !DeckManager.deckManager.spades && DeckManager.deckManager.turnCount == 0)
                     {
-                        DeckManager.deckManager.textHold = true;
-                        DeckManager.deckManager.updateText.text = "Invalid play! Spades have not been broken yet.";
-                        return;
+                        int numOfSpades = 0;
+                        foreach (Transform c in playerHand.transform)
+                        {
+                            if (c.GetComponent<CardBehavior>().suit == "spades")
+                            {
+                                numOfSpades += 1;
+                            }
+                        }
+                        if (numOfSpades != playerHand.transform.childCount)
+                        {
+                            DeckManager.deckManager.textHold = true;
+                            DeckManager.deckManager.updateText.text = "Invalid play! Spades have not been broken yet.";
+                            return;
+                        }
                     }
                 }
                 if (DeckManager.deckManager.firstTurn)

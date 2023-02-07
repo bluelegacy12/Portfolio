@@ -103,10 +103,6 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void UpdateDiscards(int value, string suit, int index)
     {
-        if (DeckManager.deckManager.firstTurn)
-        {
-            return;
-        }
         discards = GameObject.FindGameObjectsWithTag("Discard");
         GameObject emptyCard = new GameObject();
         foreach (GameObject c in discards)

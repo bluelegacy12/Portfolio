@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class Buttons : NetworkBehaviour
 {
@@ -30,5 +31,17 @@ public class Buttons : NetworkBehaviour
     {
         transform.gameObject.SetActive(false);
         Player.player.ApplyGuess();
+    }
+
+    public void Restart()
+    {
+        RestartClient();
+        SceneManager.LoadScene(0);
+    }
+
+    [ClientRpc]
+    void RestartClient()
+    {
+        SceneManager.LoadScene(0);
     }
 }

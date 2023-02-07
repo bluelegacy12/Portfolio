@@ -20,8 +20,6 @@ public class DeckManager : NetworkBehaviour
     [SyncVar]
     public int readyPlayers = 0;
     [SyncVar]
-    public bool activate = false;
-    [SyncVar]
     public float playDelay = 0;
     [SyncVar]
     public int turnIndex = 0;
@@ -106,6 +104,11 @@ public class DeckManager : NetworkBehaviour
     public TMPro.TextMeshProUGUI p2PointsText;
     public TMPro.TextMeshProUGUI p3PointsText;
     public TMPro.TextMeshProUGUI p4PointsText;
+    public GameObject endScreen;
+    public GameObject restartButton;
+    public TMPro.TextMeshProUGUI team13endScore;
+    public TMPro.TextMeshProUGUI team24endScore;
+    public TMPro.TextMeshProUGUI endText;
 
     // Start is called before the first frame update
     void Start()
@@ -118,6 +121,7 @@ public class DeckManager : NetworkBehaviour
         startButton.SetActive(true);
         guessCounter.SetActive(false);
         guessButton.SetActive(false);
+        endScreen.SetActive(false);
         updateText = GameObject.Find("UpdateText").GetComponent<TMPro.TextMeshProUGUI>();
         discard1 = GameObject.Find("Discard1");
         discard2 = GameObject.Find("Discard2");
@@ -172,15 +176,6 @@ public class DeckManager : NetworkBehaviour
         }
         if (guessButton.activeSelf)
         {
-            if (goal > 1000)
-            {
-                goal = 1000;
-            }
-            if (goal < 300)
-            {
-                goal = 300;
-            }
-            goalText.text = "Score to Win: " + goal.ToString();
             updateText.text = "How many books do you think you can win?";
             team13Guess.text = "Team 1&3 Guess: 0";
             team24Guess.text = "Team 2&4 Guess: 0";
@@ -205,9 +200,23 @@ public class DeckManager : NetworkBehaviour
             amountOfGuessers = 0;
             readyPlayers = 0;
         }
+        if (firstTurn && turnCount > 0)
+        {
+            firstTurn = false;
+        }
         if (readyPlayers == 2)
         {
             readyPlayers = 3;
+            if (goal > 1000)
+            {
+                goal = 1000;
+            }
+            if (goal < 300)
+            {
+                goal = 300;
+            }
+            goalText.text = "Score to Win: " + goal.ToString();
+            UpdateClientGoal(goal);
             playerReconnect = readyPlayers;
             foreach (GameObject c in GameObject.FindGameObjectsWithTag("Card"))
             {
@@ -400,11 +409,50 @@ public class DeckManager : NetworkBehaviour
                         }
                     }
                 }
+                firstTurn = true;
+                if (team13Points >= goal || team24Points >= goal)
+                {
+                    string winningTeam;
+                    if (team13Points > team24Points)
+                    {
+                        winningTeam = "Player 1 and 3";
+                    }
+                    else if (team13Points < team24Points)
+                    {
+                        winningTeam = "Player 2 and 4";
+                    }
+                    else
+                    {
+                        if (team13Bags < team24Bags)
+                        {
+                            winningTeam = "Player 1 and 3";
+                        }
+                        else if (team13Bags > team24Bags)
+                        {
+                            winningTeam = "Player 2 and 4";
+                        }
+                        else
+                        {
+                            winningTeam = "tie";
+                        }
+                    }
+                    float delay = 0;
+                    while (delay < 1.5f)
+                    {
+                        delay += Time.deltaTime;
+                    }
+                    EndGame(winningTeam);
+                    EndClientGame(winningTeam);
+                    return;
+                }
                 ClientNextRound();
                 nextRoundButton.SetActive(true);
                 readyPlayers = 0;
                 amountOfGuessers = 0;
-                firstTurn = true;
+                spades = false;
+                spadesPlayed = false;
+                winningCard = 0;
+                leadingSuit = "clubs";
             }
             else if (isServer)
             {
@@ -655,6 +703,8 @@ public class DeckManager : NetworkBehaviour
             player4Hand.Add(deck[0]);
             deck.Remove(deck[0]);
         }
+        player1Hand = OrganizeHand(player1Hand);
+        player3Hand = OrganizeHand(player3Hand);
         Player.player.DealHandP1();
         guessCounter.SetActive(true);
         guessButton.SetActive(true);
@@ -698,9 +748,6 @@ public class DeckManager : NetworkBehaviour
         guessCounter.SetActive(true);
         guessButton.SetActive(true);
         guessText.SetActive(true);
-        Debug.Log(player3Hand.Count);
-        Debug.Log(player3Hand[0].value);
-        Debug.Log(player3Hand[0].suit);
     }
 
     public void CreateCard(Card tempCard)
@@ -777,6 +824,12 @@ public class DeckManager : NetworkBehaviour
                 break;
         }
     }
+    [ClientRpc]
+    public void UpdateClientGoal(int num)
+    {
+        goal = num;
+        goalText.text = "Score to Win: " + goal.ToString();
+    }
 
     public void SyncClientPoints()
     {
@@ -801,6 +854,114 @@ public class DeckManager : NetworkBehaviour
         turnCount = 0;
         discardList.Clear();
         suitDisplay.gameObject.SetActive(false);
+        spades = false;
+        winningCard = 0;
+        leadingSuit = "clubs";
+    }
+
+    public void EndGame(string text)
+    {
+        endScreen.SetActive(true);
+        if (text == "tie")
+        {
+            endText.text = "It's a tie! Well played.";
+        }
+        else
+        {
+            endText.text = text + " won the game!";
+        }
+        team13endScore.text = "Team 1 & 3 Score: " + team13Points.ToString() + " & " + team13Bags.ToString() + " Bags";
+        team24endScore.text = "Team 2 & 4 Score: " + team24Points.ToString() + " & " + team24Bags.ToString() + " Bags";
+        
+    }
+
+    [ClientRpc]
+    public void EndClientGame(string text)
+    {
+        endScreen.SetActive(true);
+        restartButton.SetActive(false);
+        if (text == "tie")
+        {
+            endText.text = "It's a tie! Well played.";
+        }
+        else
+        {
+            endText.text = text + " won the game!";
+        }
+        team13endScore.text = "Team 1 & 3 Score: " + team13Points.ToString() + " & " + team13Bags.ToString() + " Bags";
+        team24endScore.text = "Team 2 & 4 Score: " + team24Points.ToString() + " & " + team24Bags.ToString() + " Bags";
+    }
+
+    public List<Card> OrganizeHand(List<Card> hand)
+    {
+        List<Card> newHand = new List<Card>();
+        List<Card> tempHandH = new List<Card>();
+        List<Card> tempHandC = new List<Card>();
+        List<Card> tempHandD = new List<Card>();
+        List<Card> tempHandS = new List<Card>();
+        foreach (Card c in hand)
+        {
+            if (c.suit == "hearts")
+            {
+                tempHandH.Add(c);
+            }
+            if (c.suit == "clubs")
+            {
+                tempHandC.Add(c);
+            }
+            if (c.suit == "diamonds")
+            {
+                tempHandD.Add(c);
+            }
+            if (c.suit == "spades")
+            {
+                tempHandS.Add(c);
+            }
+        }
+        tempHandH = OrganizeSuit(tempHandH);
+        tempHandC = OrganizeSuit(tempHandC);
+        tempHandD = OrganizeSuit(tempHandD);
+        tempHandS =  OrganizeSuit(tempHandS);
+
+        foreach (Card c in tempHandH)
+        {
+            newHand.Add(c);
+        }
+        foreach (Card c in tempHandC)
+        {
+            newHand.Add(c);
+        }
+        foreach (Card c in tempHandD)
+        {
+            newHand.Add(c);
+        }
+        foreach (Card c in tempHandS)
+        {
+            newHand.Add(c);
+        }
+        return newHand;
+    }
+
+    public List<Card> OrganizeSuit(List<Card> hand)
+    {
+        List<Card> newHand = hand;
+        Card tempCard = new Card();
+        int counter = 1;
+        while (counter > 0)
+        {
+            counter = 0;
+            for (int i = 1; i < hand.Count; i++)
+            {
+                if (newHand[i].value < newHand[i - 1].value)
+                {
+                    tempCard = hand[i];
+                    newHand.RemoveAt(i);
+                    newHand.Insert(i - 1, tempCard);
+                    counter++;
+                }
+            }
+        }
+        return newHand;
     }
 
     public class Card

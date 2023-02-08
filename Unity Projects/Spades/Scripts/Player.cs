@@ -90,7 +90,7 @@ public class Player : NetworkBehaviour
             for (int i = 0; i < player3Hand.Count; i++)
             {
                 CardBehavior card = looseCardObjects[i].GetComponent<CardBehavior>();
-                card.transform.SetParent(playerHand.transform); // issue is here somehow
+                card.transform.SetParent(playerHand.transform);
                 card.transform.localScale = new Vector3(1, 1, 1);
                 card.value = player3Hand[i].value;
                 card.suit = player3Hand[i].suit;
@@ -482,6 +482,10 @@ public class Player : NetworkBehaviour
         DeckManager.deckManager.guessText.SetActive(false);
         if (!isServer)
         {
+            if (guessNumber == 0)
+            {
+                DeckManager.deckManager.nil3.gameObject.SetActive(true);
+            }
             TotalGuessesClient(guessNumber);
             DeckManager.deckManager.waitForNext = false;
         }
@@ -494,12 +498,27 @@ public class Player : NetworkBehaviour
     [Command]
     public void TotalGuessesClient(int guess)
     {
+        if (guess == 0)
+        {
+            DeckManager.deckManager.nil3.gameObject.SetActive(true);
+        }
         DeckManager.deckManager.p3Guess = guess;
         DeckManager.deckManager.amountOfGuessers += 1;
     }
 
     public void TotalGuessesServer()
     {
+        if (guessNumber == 0)
+        {
+            DeckManager.deckManager.nil1.gameObject.SetActive(true);
+            ClientNil1();
+        }
         DeckManager.deckManager.amountOfGuessers += 1;
+    }
+
+    [ClientRpc]
+    public void ClientNil1()
+    {
+        DeckManager.deckManager.nil1.gameObject.SetActive(true);
     }
 }

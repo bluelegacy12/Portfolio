@@ -104,6 +104,10 @@ public class DeckManager : NetworkBehaviour
     public TMPro.TextMeshProUGUI p2PointsText;
     public TMPro.TextMeshProUGUI p3PointsText;
     public TMPro.TextMeshProUGUI p4PointsText;
+    public TMPro.TextMeshProUGUI nil1;
+    public TMPro.TextMeshProUGUI nil2;
+    public TMPro.TextMeshProUGUI nil3;
+    public TMPro.TextMeshProUGUI nil4;
     public GameObject endScreen;
     public GameObject restartButton;
     public TMPro.TextMeshProUGUI team13endScore;
@@ -122,6 +126,10 @@ public class DeckManager : NetworkBehaviour
         guessCounter.SetActive(false);
         guessButton.SetActive(false);
         endScreen.SetActive(false);
+        nil1.gameObject.SetActive(false);
+        nil2.gameObject.SetActive(false);
+        nil3.gameObject.SetActive(false);
+        nil4.gameObject.SetActive(false);
         updateText = GameObject.Find("UpdateText").GetComponent<TMPro.TextMeshProUGUI>();
         discard1 = GameObject.Find("Discard1");
         discard2 = GameObject.Find("Discard2");
@@ -167,11 +175,14 @@ public class DeckManager : NetworkBehaviour
             }
             team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
             team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
+            p1PointsText.text = "P1 Books: " + p1Points.ToString();
+            p2PointsText.text = "P2 Books: " + p2Points.ToString();
+            p3PointsText.text = "P3 Books: " + p3Points.ToString();
+            p4PointsText.text = "P4 Books: " + p4Points.ToString();
         }
 
         if (readyPlayers == 3 && !guessButton.activeSelf)
         {
-
             updateText.text = "Waiting for other players";
         }
         if (guessButton.activeSelf)
@@ -187,6 +198,13 @@ public class DeckManager : NetworkBehaviour
             p2PointsText.text = "P2 Books: 0";
             p3PointsText.text = "P3 Books: 0";
             p4PointsText.text = "P4 Books: 0";
+            if (!isServer && Player.player.playerHand.transform.childCount == 0)
+            {
+                ServerUpdateP3Hand();
+                ClientUpdateP3Hand();
+                SpawnP3Hand();
+                Player.player.DealHandP3();
+            }
         }
         if (amountOfGuessers == 2)
         {
@@ -375,18 +393,29 @@ public class DeckManager : NetworkBehaviour
                 {
                     if (p1Points + p3Points >= p1p3Total)
                     {
-                        team13Points += p1p3Total * 10;
-                        if (p1Points + p3Points > p1p3Total)
+                        if ((nil1.gameObject.activeSelf && p1Points > 0) || (nil3.gameObject.activeSelf && p3Points > 0))
                         {
-                            team13Bags += (p1Points + p3Points) - p1p3Total;
+                            updateText.text = "Your team busted on nil! The player with nil must get 0 points to win big.";
                         }
-                        team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
-                        team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
-                        updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
-                        if (team13Bags >= 10)
+                        else if ((nil1.gameObject.activeSelf && p1Points == 0) || (nil3.gameObject.activeSelf && p3Points == 0))
                         {
-                            team13Bags -= 10;
-                            team13Points -= 100;
+                            team13Points += 100;
+                        }
+                        if ((!nil1.gameObject.activeSelf && !nil3.gameObject.activeSelf) || ((nil1.gameObject.activeSelf && p1Points == 0) || (nil3.gameObject.activeSelf && p3Points == 0)))
+                        {
+                            team13Points += p1p3Total * 10;
+                            if (p1Points + p3Points > p1p3Total)
+                            {
+                                team13Bags += (p1Points + p3Points) - p1p3Total;
+                            }
+                            team13PointsText.text = "Team 1&3 Points: " + team13Points.ToString();
+                            team13BagsText.text = "Team 1&3 Bags: " + team13Bags.ToString();
+                            updateText.text = "Your total points are now: " + team13Points.ToString() + ", and your bags are: " + team13Bags.ToString() + ".";
+                            if (team13Bags >= 10)
+                            {
+                                team13Bags -= 10;
+                                team13Points -= 100;
+                            }
                         }
                     }
                     else
@@ -395,17 +424,25 @@ public class DeckManager : NetworkBehaviour
                     }
                     if (p2Points + p4Points >= p2p4Total)
                     {
-                        team24Points += p2p4Total * 10;
-                        if (p2Points + p4Points > p2p4Total)
+                        
+                        if ((nil2.gameObject.activeSelf && p2Points == 0) || (nil4.gameObject.activeSelf && p4Points == 0))
                         {
-                            team24Bags += (p2Points + p4Points) - p2p4Total;
+                            team24Points += 100;
                         }
-                        team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
-                        team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
-                        if (team24Bags >= 10)
+                        if ((!nil2.gameObject.activeSelf && !nil4.gameObject.activeSelf) || ((nil2.gameObject.activeSelf && p2Points == 0) || (nil4.gameObject.activeSelf && p4Points == 0)))
                         {
-                            team24Bags -= 10;
-                            team24Points -= 100;
+                            team24Points += p2p4Total * 10;
+                            if (p2Points + p4Points > p2p4Total)
+                            {
+                                team24Bags += (p2Points + p4Points) - p2p4Total;
+                            }
+                            team24PointsText.text = "Team 2&4 Points: " + team24Points.ToString();
+                            team24BagsText.text = "Team 2&4 Bags: " + team24Bags.ToString();
+                            if (team24Bags >= 10)
+                            {
+                                team24Bags -= 10;
+                                team24Points -= 100;
+                            }
                         }
                     }
                 }
@@ -453,6 +490,10 @@ public class DeckManager : NetworkBehaviour
                 spadesPlayed = false;
                 winningCard = 0;
                 leadingSuit = "clubs";
+                nil1.gameObject.SetActive(false);
+                nil2.gameObject.SetActive(false);
+                nil3.gameObject.SetActive(false);
+                nil4.gameObject.SetActive(false);
             }
             else if (isServer)
             {
@@ -469,6 +510,7 @@ public class DeckManager : NetworkBehaviour
         }
         if (turnIndex != 0 && turnCount < 4 && turnIndex != 2 && !waitForNext)
         {
+            // ai card play logic
             playDelay += Time.deltaTime;
             List<Card> currentPlayer = new List<Card>();
             Card currentCard = new Card();
@@ -504,16 +546,26 @@ public class DeckManager : NetworkBehaviour
                 }                
                 foreach (Card c in currentPlayer)
                 {
+                    // if player is not starting the round, play the highest card of the correct suit
                     if (turnCount != 0 && currentCard.value < c.value && leadingSuit == c.suit)
                     {
-                        currentCard = c;
-                        cardFound = true;
+                        // if the chosen card is not going to win the hand or is going to undermine their partner, don't play it
+                        if (c.value > winningCard && ((turnIndex == 1 && winningPlayer != 3) || (turnIndex == 3 && winningPlayer != 1)))
+                        {
+                            // if a spade has been played, then don't play high
+                            if ((spadesPlayed && c.suit == "spades") || !spadesPlayed)
+                            {
+                                currentCard = c;
+                                cardFound = true;
+                            }
+                        }
                     }
+                    // if player is starting the round, play the highest card
                     if (turnCount == 0)
                     {
                         if (currentCard.value < c.value)
                         {
-                            if (c.suit == "spades" && spades || c.suit != "spades")
+                            if ((c.suit == "spades" && spades) || c.suit != "spades")
                             {
                                 currentCard = c;
                                 cardFound = true;
@@ -523,24 +575,58 @@ public class DeckManager : NetworkBehaviour
                 }
                 if (!cardFound)
                 {
+                    // if no good play yet, play lowest card of correct suit
+                    currentCard.value = 14;
                     foreach (Card c in currentPlayer)
                     {
-                        if (c.suit == "spades")
+                        if (currentCard.value >= c.value && leadingSuit == c.suit)
                         {
                             currentCard = c;
                             cardFound = true;
-                            break;
                         }
                     }
                 }
                 if (!cardFound)
                 {
+                    // if no good play found yet, play the lowest spade
                     currentCard.value = 14;
                     foreach (Card c in currentPlayer)
                     {
-                        if (currentCard.value > c.value)
+                        if (c.suit == "spades" && c.value <= currentCard.value)
+                        {
+                            // if player is going to undermine their partner, don't play it
+                            if ((turnIndex == 1 && winningPlayer != 3) || (turnIndex == 3 && winningPlayer != 1))
+                            {
+                                currentCard = c;
+                                cardFound = true;
+                            }
+                        }
+                    }
+                }
+                if (!cardFound)
+                {
+                    // if no good play, throw lowest card
+                    currentCard.value = 14;
+                    foreach (Card c in currentPlayer)
+                    {
+                        // if trying to throw, don't play a spade
+                        if (currentCard.value >= c.value && c.suit != "spades")
                         {
                             currentCard = c;
+                            cardFound = true;
+                        }
+                    }
+                }
+                if (!cardFound)
+                {
+                    // if spades are all that's left, play the lowest
+                    currentCard.value = 14;
+                    foreach (Card c in currentPlayer)
+                    {
+                        if (currentCard.value >= c.value)
+                        {
+                            currentCard = c;
+                            cardFound = true;
                         }
                     }
                 }
@@ -857,6 +943,10 @@ public class DeckManager : NetworkBehaviour
         spades = false;
         winningCard = 0;
         leadingSuit = "clubs";
+        nil1.gameObject.SetActive(false);
+        nil2.gameObject.SetActive(false);
+        nil3.gameObject.SetActive(false);
+        nil4.gameObject.SetActive(false);
     }
 
     public void EndGame(string text)
@@ -879,7 +969,6 @@ public class DeckManager : NetworkBehaviour
     public void EndClientGame(string text)
     {
         endScreen.SetActive(true);
-        restartButton.SetActive(false);
         if (text == "tie")
         {
             endText.text = "It's a tie! Well played.";

@@ -42,6 +42,7 @@ public class Buttons : NetworkBehaviour
     [ClientRpc]
     void RestartClient()
     {
-        SceneManager.LoadScene(0);
+        DeckManager.deckManager.updateText.text = "Waiting for Host";
+        DeckManager.deckManager.restartButton.SetActive(false);
     }
 }

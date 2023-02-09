@@ -1,11 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
+using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
 public class Buttons : NetworkBehaviour
 {
+    public GameObject relay;
+
+    private void Start()
+    {
+        relay = GameObject.Find("Relay");
+    }
+
     public void NextTurn()
     {
         Player.player.ServerNextTurn();
@@ -35,14 +42,24 @@ public class Buttons : NetworkBehaviour
 
     public void Restart()
     {
-        RestartClient();
+        RestartClientRpc();
         SceneManager.LoadScene(0);
     }
 
     [ClientRpc]
-    void RestartClient()
+    void RestartClientRpc()
     {
         DeckManager.deckManager.updateText.text = "Waiting for Host";
         DeckManager.deckManager.restartButton.SetActive(false);
+    }
+
+    public void JoinGameButton()
+    {
+        relay.GetComponent<Relay>().JoinGame();
+    }
+
+    public void CreateGameButton()
+    {
+        relay.GetComponent<Relay>().CreateGame();
     }
 }

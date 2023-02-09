@@ -46,22 +46,24 @@ public class Player : NetworkBehaviour
         {
             SpawnHand();
         }
-        
-        if (leadingSuit != DeckManager.deckManager.leadingSuit || winningCard != DeckManager.deckManager.winningCard)
+        if (leadingSuit != null && DeckManager.deckManager.leadingSuit != null)
         {
-            leadingSuit = DeckManager.deckManager.leadingSuit;
-            winningCard = DeckManager.deckManager.winningCard;
-            if (DeckManager.deckManager.turnCount == 1)
+            if (leadingSuit != DeckManager.deckManager.leadingSuit || winningCard != DeckManager.deckManager.winningCard)
             {
-                foreach (Sprite s in DeckManager.deckManager.cardFace)
+                leadingSuit = DeckManager.deckManager.leadingSuit;
+                winningCard = DeckManager.deckManager.winningCard;
+                if (DeckManager.deckManager.turnCount == 1)
                 {
-                    if (s.name == winningCard.ToString() + leadingSuit)
+                    foreach (Sprite s in DeckManager.deckManager.cardFace)
                     {
-                        DeckManager.deckManager.suitDisplay.GetComponent<Image>().sprite = s;
-                        break;
+                        if (s.name == winningCard.ToString() + leadingSuit)
+                        {
+                            DeckManager.deckManager.suitDisplay.GetComponent<Image>().sprite = s;
+                            break;
+                        }
                     }
+                    DeckManager.deckManager.suitDisplay.SetActive(true);
                 }
-                DeckManager.deckManager.suitDisplay.SetActive(true);
             }
         }
     }

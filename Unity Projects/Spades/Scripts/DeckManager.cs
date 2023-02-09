@@ -31,7 +31,7 @@ public class DeckManager : NetworkBehaviour
     public GameObject newCard;
     public GameObject nextTurnButton;
     public GameObject startButton;
-    [SyncVar]
+    
     public string leadingSuit;
     [SyncVar]
     public int winningCard = 0;
@@ -69,9 +69,9 @@ public class DeckManager : NetworkBehaviour
     public List<Card> player2Hand = new List<Card>();
     public List<Card> player3Hand = new List<Card>();
     public List<Card> player4Hand = new List<Card>();
-    public readonly SyncList<int> player3values = new SyncList<int>();
-    public readonly SyncList<string> player3suits = new SyncList<string>();
-    public readonly SyncList<string> player3imageName = new SyncList<string>();
+    public List<int> player3values = new List<int>();
+    public List<string> player3suits = new List<string>();
+    public List<string> player3imageName = new List<string>();
     public GameObject nm;
     public GameObject discard1;
     public GameObject discard2;
@@ -180,7 +180,7 @@ public class DeckManager : NetworkBehaviour
             p3PointsText.text = "P3 Books: " + p3Points.ToString();
             p4PointsText.text = "P4 Books: " + p4Points.ToString();
         }
-
+        
         if (readyPlayers == 3 && !guessButton.activeSelf)
         {
             updateText.text = "Waiting for other players";
@@ -198,13 +198,6 @@ public class DeckManager : NetworkBehaviour
             p2PointsText.text = "P2 Books: 0";
             p3PointsText.text = "P3 Books: 0";
             p4PointsText.text = "P4 Books: 0";
-            if (!isServer && Player.player.playerHand.transform.childCount == 0)
-            {
-                ServerUpdateP3Hand();
-                ClientUpdateP3Hand();
-                SpawnP3Hand();
-                Player.player.DealHandP3();
-            }
         }
         if (amountOfGuessers == 2)
         {
@@ -259,7 +252,7 @@ public class DeckManager : NetworkBehaviour
             {
                 ShuffleAndDeal();
                 ServerUpdateP3Hand();
-                ClientUpdateP3Hand();
+                ClientUpdateP3Hand(player3values, player3suits, player3imageName);
                 SpawnP3Hand();
                 Player.player.DealHandP3();
             }
@@ -811,16 +804,31 @@ public class DeckManager : NetworkBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
+    public void ServerDealP3Hand()
+    {
+        ClientRefreshP3Hand();
+        Player.player.DealHandP3();
+    }
+
+    public void ClientRefreshP3Hand()
+    {
+        ClientUpdateP3Hand(player3values, player3suits, player3imageName);
+    }
+
     [ClientRpc]
-    public void ClientUpdateP3Hand()
+    public void ClientUpdateP3Hand(List<int> values, List<string> suits, List<string> images)
     {
         player3Hand.Clear();
-        for (int i = 0; i < player3values.Count; i++)
+        guessCounter.SetActive(true);
+        guessButton.SetActive(true);
+        guessText.SetActive(true);
+        for (int i = 0; i < values.Count; i++)
         {
             Card tempCard = new Card();
-            tempCard.value = player3values[i];
-            tempCard.suit = player3suits[i];
-            tempCard.imageName = player3imageName[i];
+            tempCard.value = values[i];
+            tempCard.suit = suits[i];
+            tempCard.imageName = images[i];
             foreach (Sprite s in cardFace)
             {
                 if (s.name == tempCard.imageName)
@@ -831,9 +839,8 @@ public class DeckManager : NetworkBehaviour
             }
             player3Hand.Add(tempCard);
         }
-        guessCounter.SetActive(true);
-        guessButton.SetActive(true);
-        guessText.SetActive(true);
+        Debug.Log("player 3 hand: " + player3Hand[0].value.ToString());
+        
     }
 
     public void CreateCard(Card tempCard)

@@ -8,3 +8,5 @@ Call Time is the current name and the project is intended to be an app that allo
 
 The site is up and running on a cloud server. To test out the web app follow this link and start making schedules!
 https://dylanelza.pythonanywhere.com/getdata/home/
+
+Video Demo: https://drive.google.com/file/d/1KfMO2pc7dEb69prynvc-dLSqzqhhEphf/view?usp=sharing

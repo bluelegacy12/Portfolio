@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lyq2g0h%5b$r2_54c12wk@rgoej_l3d=ku%3x9q(qgc=efr)p1'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -133,7 +133,7 @@ TWILIO_ACCOUNT_SID = 'live_redacted-twilio-account-sid'
 TWILIO_AUTH_TOKEN = 'live_redacted-twilio-auth-token'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'dylan.elza@gmail.com'
-EMAIL_HOST_PASSWORD = "hivejlittdjjpyre"
-EMAIL_PORT = 587
+EMAIL_HOST = 
+EMAIL_HOST_USER = #email here
+EMAIL_HOST_PASSWORD = #password here
+EMAIL_PORT = 

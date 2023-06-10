@@ -9,7 +9,7 @@ CallTime is a web app created with the Django framework that allows for easily c
 The site is up and running on a cloud server. To test out the web app follow this link and start making schedules!
 https://dylanelza.pythonanywhere.com/getdata/home/
 
-Video Demo: https://youtu.be/6BacKfMKU94
+Video Demo: https://youtu.be/Jsc_MZOkz2A
 
 Features:
 - Two account types: Artist and Company

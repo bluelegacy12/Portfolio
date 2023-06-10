@@ -23,4 +23,5 @@ Features:
 - Artist profile allows for basic user setting changes like email and phone number privacy
 - Artist profile shows user-specific schedule information and an option to view the full schedule
 - **_When creating a schedule, if a date is selected that is the same day as an Artist Conflict, a modal will immediately display, showing all Artists with a schedule conflict on that day_**
+- QR code for mobile app
 

@@ -17,10 +17,10 @@ Features:
 - Company accounts can upload Documents for Artists to view - files are stored in a secure google drive for space management
 - API endpoints for all CRUD operations for each table
 - Artist accounts can be linked to Company accounts in order to view relevant schedules
-**_- Pdf can be automatically generated from schedule data and emailed to all Artists and Staff emails linked to Company account at the push of a button_**
+- **_Pdf can be automatically generated from schedule data and emailed to all Artists and Staff emails linked to Company account at the push of a button_**
 - Company accounts can send mass emails to Artists and Staff linked to Company
 - Company accounts can create Categories to assign to Artist roles for quick selection later when making schedules and scheduling Artists
 - Artist profile allows for basic user setting changes like email and phone number privacy
 - Artist profile shows user-specific schedule information and an option to view the full schedule
-**_- When creating a schedule, if a date is selected that is the same day as an Artist Conflict, a modal will immediately display, showing all Artists with a schedule conflict on that day_**
+- **_When creating a schedule, if a date is selected that is the same day as an Artist Conflict, a modal will immediately display, showing all Artists with a schedule conflict on that day_**
 

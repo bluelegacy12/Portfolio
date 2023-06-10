@@ -2,7 +2,7 @@
 
 CallTime is completed, however I will likely continue adding updates. The complete code is on a cloud server and you can view the results of the code in the link below.
 
-# Theater
+# CallTime
 
 CallTime is the current name and the project is intended to be an app that allows for creating easy daily schedules for performing artists and stage managers.
 

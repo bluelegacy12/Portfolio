@@ -11,6 +11,8 @@ https://dylanelza.pythonanywhere.com/getdata/home/
 
 Video Demo: https://youtu.be/Jsc_MZOkz2A
 
+GitHub Repo: https://github.com/bluelegacy12/call_time
+
 Features:
 - Two account types: Artist and Company
 - Company accounts can create Shows, Roles, Call Blocks (Schedules), Conflicts for Artists, Staff members, Venues with addresses for rehearsal and performance locations

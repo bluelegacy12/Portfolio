@@ -3,7 +3,7 @@ Completed and in-progress projects
 
 # Bubble.io
 Inventory app:
-https://bubble.io/home/stevegill7.bubbleapps.io
+https://stevegill7.bubbleapps.io/version-test
 
 # Backend Projects/Full Stack - CallTime - Completed
 Call Time is an online scheduler for artists and theatrical companies to seamlessly organize and create daily rehearsal schedules. Projected completion date: March 2023.

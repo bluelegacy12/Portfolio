@@ -50,8 +50,3 @@ javascript to average the review score and show an appropriate star count
 - A unique referral code is randomly generated on account creation and shown in profile page
 - If user created an account with a referral code, the user assigned to that referral code is shown on their profile paged as "Referred By:"
 - When a referral code is used in account creation, both parties gain 50 reward points and their point total displayed in their profile page
-
-# Unity Projects and AR Filters
-https://github.com/bluelegacy12/UnityPortfolio
-
-Follow the link above to explore games I have made in the Unity Engine and C# code, as well as any AR Filters made with Spark

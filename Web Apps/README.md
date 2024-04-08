@@ -47,12 +47,12 @@ Other smaller features can be found on the web app as well
 This is a web app designed to be a platform for a specific business to sell their product. In this case the client is selling cookies.
 The app is close to completion but has key features missing such as charging credit/debit cards.
 Feaures so far:
--A Neat and professional homepage
--A shop page that lists products pulled from the backend
--An admin page to add or edit products
--A detailed page of each product and their reviews, showing stars for each personal review and 
+- A Neat and professional homepage
+- A shop page that lists products pulled from the backend
+- An admin page to add or edit products
+- A detailed page of each product and their reviews, showing stars for each personal review and 
 javascript to average the review score and show an appropriate star count
--A signed-in user can leave a review
--A unique referral code is randomly generated on account creation and shown in profile page
--If user created an account with a referral code, the user assigned to that referral code is shown on their profile paged as "Referred By:"
--When a referral code is used in account creation, both parties gain 50 reward points and their point total displayed in their profile page
+- A signed-in user can leave a review
+- A unique referral code is randomly generated on account creation and shown in profile page
+- If user created an account with a referral code, the user assigned to that referral code is shown on their profile paged as "Referred By:"
+- When a referral code is used in account creation, both parties gain 50 reward points and their point total displayed in their profile page

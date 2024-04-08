@@ -2,7 +2,7 @@
 
 CallTime is completed, however I will likely continue adding updates. The complete code is on a cloud server and you can view the results of the code in the link below.
 
-# CallTime (listed as 'theater')
+# CallTime
 
 CallTime is a web app created with the Django framework that allows for easily creating daily schedules for performing artists and stage managers.
 
@@ -28,7 +28,7 @@ Features:
 - QR code for mobile app
 
 
-# TranspoCentral (listed as 'trans-comm-django')
+# TranspoCentral
 
 This is a social platform intended to provide a space to share resources and job opportunities, communicate, and filter information for truck drivers and relevant clients.
 This idea was proposed by a specialist in the field who saw a need for a "facebook-like" platform for truck drivers to find valuable resources and information.
@@ -42,7 +42,7 @@ The project is incomplete and currently has only a few features:
 Other smaller features can be found on the web app as well
 
 
-# Sweet Abundance (list as 'sweetAbundance')
+# Sweet Abundance
 
 This is a web app designed to be a platform for a specific business to sell their product. In this case the client is selling cookies.
 The app is close to completion but has key features missing such as charging credit/debit cards.

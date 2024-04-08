@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3 style="margin: 150px 0 -100px 150px;">All Products</h3>
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+            <div id="{{ product.name }}" class="col-6">
+                <a href="{% url 'product' product.name %}"><img class="mb-4" src="{{ product.photo.url }}" width="100%" height="700" alt="photo of {{ product.name }}"/></a>
+                <p>{{ product.name }}</p>
+                <p>${{ product.price }}</p>
+                {% if product.flavors %}
+                    {% for flavor in product.flavors %}
+                        <div class="flavor-option" data-color="{{ flavor.color }}"></div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    const flavors = document.querySelectorAll(".flavor-option");
+
+    for (flavor of flavors) {
+        flavor.style.backgroundColor = flavor.data-color;
+    }
+</script>
+{% endblock %}

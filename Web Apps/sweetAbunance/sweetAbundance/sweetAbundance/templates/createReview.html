@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+<br>
+{% if user.is_authenticated %}
+    <form class="form-group align-items-center container" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <label class="control-label col-sm-2" for="rating">Rating:</label>
+            <input type="number" max="5" min="1" value="5" class="col-1" id='rating' name="rating"/>
+        </div>
+        <br>
+        <div class="form-row">
+            <label class="control-label col-sm-2" for="text">Description:</label>
+            <textarea class="col-sm-6" id='text' name="text" rows="5"></textarea>
+            <input name="product" id="product" value="{{ product }}" hidden>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-outline-light">Submit</button>
+    </form>
+{% else %}
+<div class="container">
+    <h1>You are not signed in</h1>
+    <a class="btn btn-light mb-5" href="{% url 'login' %}">Sign In</a><br>
+    <a class="btn btn-info" href="{% url 'register' %}">Sign Up</a>
+</div>
+{% endif %}
+{% endblock %}

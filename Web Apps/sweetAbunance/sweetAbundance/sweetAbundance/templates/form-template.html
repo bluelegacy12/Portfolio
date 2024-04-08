@@ -1,0 +1,17 @@
+{{ form.non_field_errors }}
+<h3 style="color:red;">{{ error }}</h3>
+{% for field in form %}
+    <div class="form-group align-items-center">
+        <div class="form-row">
+            <span class="text-danger small">{{ field.errors }}</span>
+        </div>
+        <div class="form-row">
+            {% if field.name == "username" %}
+                <label class="control-label col-sm-2">Email:</label>
+            {% else %}
+                <label class="control-label col-sm-2">{{ field.label_tag }}</label>
+            {% endif %}
+            <div class="col-sm-6" id='{{ field.name }}'>{{ field }}</div>
+        </div>
+    </div>
+{% endfor %}

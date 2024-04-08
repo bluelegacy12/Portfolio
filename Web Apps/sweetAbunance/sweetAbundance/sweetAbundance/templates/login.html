@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if user.is_authenticated %}
+    <div class="container mt-5 pt-5 text-center">
+        <h1>You must be logged out to perform this action!</h1>
+        <a class="btn btn-outline-light mb-5" href="{% url 'home' %}">Return Home</a><br>
+        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Log Out</a>
+    </div>
+{% else %}
+    <div class="container pl-5 text-center" id="loginPage">
+        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <br>
+            <h1>Login</h1>
+            <p><i>Username and password are case-sensitive</i></p>
+            {% include 'form-template.html' %}
+            <div class="form-group">
+                <input type="hidden" name="next" value="{% url 'home' %}"/>
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit">Sign In</button>
+                </div>
+            </div>
+        </form>
+        <br>
+        <p><i>Don't have an account yet? <a href="{% url 'register' %}">Click Here</a> to register!</i></p>
+    </div>
+    <br>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cropperjs": "^1.6.1",
+    "mdb-ui-kit": "^6.4.2"
+  }
+}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3 style="margin: 150px 0 -100px 150px;"><a href="{% url 'shop' %}">< All Products </a></h3>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ object.photo.url }}" width="100%">
+        </div>
+        <div class="col ml-5">
+            <h1>{{ object.name }}</h1>
+            <h2>${{ object.price }}</h2>
+        </div>
+    </div>
+    <hr color="white">
+    <div class="my-5">
+        <h1 class="text-center" id="rating" style="font-size: 50px;">5.0 Rating</h1>
+        <div class="row">
+            <div class="col-9"></div>
+                <a class="btn btn-outline-light col" id="addReview" href="{% url 'add-review' %}?{{ object.name }}">
+                    <p class="my-auto"><i class="fa fa-pencil"></i> Write a Review</p>
+                </a>
+        </div>
+    </div>
+    <hr color="white">
+    <h3>Reviews</h3>
+    {% for review in object.review_set.all %}
+        <div class="row">
+            <div class="col">
+                <p>{{ review.account.user.first_name }} {{ review.account.user.last_name }}</p>
+            </div>
+            <div class="col text-right">
+                <p>{{ review.date }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <p class="col rating">{{ review.rating }}</p>
+        </div>
+        <p>
+        <div class="row">
+            <p class="col indent">{{ review.text }}</p>
+        </div>
+        <div class="row">
+            <div class="col lead">
+                <a href="#"><i class="fa fa-share"></i> Share |</a>
+            </div>
+            <div class="col text-right">
+                <p class="lead">Was this review helpful? &emsp;<i class="fa fa-thumbs-up"></i> 0 &emsp;<i class="fa fa-thumbs-down"></i> 0</p>
+            </div>
+        </div>
+        </p>
+        <hr color="white">
+    {% endfor %}
+</div>
+<script>
+    const bigRating = document.querySelector("#rating");
+    const ratings = document.querySelectorAll(".rating");
+
+    let ratingsArr = [];
+
+    // turn rating number from review into an image and calc average for overall review
+    for (rating of ratings) {
+        if (rating.innerHTML.search("5") > -1) {
+            rating.innerHTML = "<img src='../static/images/5star.png' width='150'/>";
+            ratingsArr.push(5);
+        } else if (rating.innerHTML.search("4") > -1) {
+            rating.innerHTML = "<img src='../static/images/4star.png' width='150'/>";
+            ratingsArr.push(4);
+        } else if (rating.innerHTML.search("3") > -1) {
+            rating.innerHTML = "<img src='../static/images/3star.png' width='150'/>";
+            ratingsArr.push(3);
+        } else if (rating.innerHTML.search("2") > -1) {
+            rating.innerHTML = "<img src='../static/images/2star.png' width='150'/>";
+            ratingsArr.push(2);
+        } else {
+            rating.innerHTML = "<img src='../static/images/1star.png' width='150'/>";
+            ratingsArr.push(1);
+        }
+    }
+
+    let ratingNum = ratingsArr.reduce((a, b) => a + b)/ratings.length;
+    
+    if (ratingNum === 5) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/5star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 4.5) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4.5star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 4) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 3.5) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3.5star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 3) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 2.5) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2.5star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 2) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2star.png' width='350'/> ${ratings.length} Reviews`;
+    } else if (ratingNum >= 1.5) {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1.5star.png' width='350'/> ${ratings.length} Reviews`;
+    } else {
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1star.png' width='350'/> ${ratings.length} Reviews`;
+    }
+</script>
+{% endblock %}

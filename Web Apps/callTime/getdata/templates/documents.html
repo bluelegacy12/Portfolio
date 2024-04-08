@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}
+<br>
+<div class="container-fluid pl-md-5">
+    <div class="row">
+        <div class="col-sm-10 text-center">
+            <h1>Documents</h1>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12">
+            {% if user.groups.all.last.name == 'Company' %}
+                <h3><a href="{% url 'getdata:documents-add' %}?{{ self.id }}"><i class="fa fa-plus no-outline"></i> Upload a new file</a></h3>
+                <hr style="margin-right: 10%;">
+                <h2><u>{{ self.name }}</u></h2>
+                {% for doc in self.uploads_set.all %}
+                    <br>
+                    <h2>
+                    <a href="{{ doc.file.url|cut:'download' }}" target="_blank"><i class="fa fa-file no-outline"></i> {{ doc.name }}</a><br>
+                    {{ doc.details }}
+                    </h2>
+                    <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:documents-update' doc.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="doc_id" value="{{ doc.id }}">&nbsp;
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa fa-wrench"></i>
+                        </button>&nbsp;
+                    </form>&nbsp;
+                    <form style="display: inline" action="{% url 'getdata:documents-delete' doc.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="doc_id" value="{{ doc.id }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+                    <br>
+                {% endfor %}
+                <hr style="margin-right: 10%;">
+                {% for s in staff %}
+                    <h2><u>{{ s.company }}</u></h2>
+                    {% for doc in s.company.uploads_set.all %}
+                        <br>
+                        <h2>
+                        <a href="{{ doc.file.url|cut:'download' }}" target="_blank"><i class="fa fa-file no-outline"></i> {{ doc.name }}</a> <br>
+                        {{ doc.details }}
+                        </h2>
+                        <form style="display: inline; margin-left: 5%;" action="{% url 'getdata:documents-update' doc.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="doc_id" value="{{ doc.id }}">&nbsp;
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa fa-wrench"></i>
+                            </button>&nbsp;
+                        </form>&nbsp;
+                        <form style="display: inline" action="{% url 'getdata:documents-delete' doc.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="doc_id" value="{{ doc.id }}">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                        <br>
+                    {% endfor %}
+                {% endfor %}
+            {% elif user.groups.all.last.name == 'Artist' %}
+                <hr style="margin-right: 10%;">
+                {% for company in companies %}
+                    {% for performer in company.performers.all %}
+                        {% if performer.username == user.username %}
+                            <h2><u>{{ company }}</u></h2><br>
+                            {% for doc in company.uploads_set.all %}
+                                <h3>
+                                    <a href="{{ doc.file.url }}" target="_blank"><i class="fa fa-file"></i> {{ doc.name }}</a></h3>
+                                    <h4>{{ doc.details }}</h4>
+                                    <br>
+                            {% endfor %}
+                            <hr style="margin-right: 10%;">
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

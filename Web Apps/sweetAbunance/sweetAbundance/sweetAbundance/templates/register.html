@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if user.is_authenticated %}
+    <div class="container mt-5 pt-5">
+        <h1>You must be logged out to perform this action!</h1>
+        <a class="btn btn-outline-light mb-5" href="{% url 'home' %}">Return Home</a><br>
+        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Log Out</a>
+    </div>
+{% else %}
+<div class="container mb-5">
+    <h1>Create Account</h1>
+    <p><i>Username and password are case-sensitive</i></p><br>
+    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'form-template.html' %}
+        <div class="form-group">
+            <div class="col-sm-6 form-row align-items-center">
+                <label class="control-label col-sm-4 justify-content-left">Phone (optional):</label>
+                <input type="text" id='phone' name="phone"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6 form-row align-items-center">
+                <label class="control-label col-sm-4">Referral Code (optional):</label>
+                <input type="text" id='referredBy' name="referredBy"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit">Sign Up</button>
+            </div>
+        </div>
+    </form>
+    <br>
+    <p><i>Already have an account? <a href="{% url 'login' %}">Click here</a> to login!</i></p>
+</div>
+{% endif %}
+{% endblock %}

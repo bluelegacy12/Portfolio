@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if not user.is_authenticated %}
+    <div class="container mt-5 pt-5">
+        <h1>You must be logged in to perform this action!</h1>
+        <a class="btn btn-danger" href="{% url 'login' %}">Login</a>
+    </div>
+{% else %}
+    <div class="container pl-5 bubble">
+        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <br>
+            <h1>Edit Profile</h1>
+            {% include 'form-template.html' %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br>
+{% endif %}
+{% endblock %}

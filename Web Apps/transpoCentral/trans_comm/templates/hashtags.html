@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="row">
+    <div class="col-xs-1">
+        <nav class="leftbar py-5 pl-5" style="width: 20%;">
+            <h3>
+                Hashtags
+            </h3>
+            <br>
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa-regular fa-star"></i>&emsp;Trending Hashtags</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-hashtag"></i>&emsp;Generate Hashtag</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col feed mt-5" style="width: 70%; margin-left: 25%;">
+        <div class="form-inline ">
+            <input id="hashsearch" class="form-control mx-2 text-info" type="search" placeholder="Search" aria-label="Search"></input>
+        </div>&emsp;
+    </div>
+</div>
+<div class="row" style="width: 70%; margin-left: 30%;">
+    <div class="col-10">
+        {% for hashtag in hashtags|slice:":10" %}
+            <button class="btn btn-info mx-4 my-4" onClick="showFilteredPosts('{{ hashtag }}')">#{{ hashtag }}</button>
+        {% endfor %}
+    </div>
+</div>
+<div class="feed" style="margin-left: 25%;">
+    {% for post in object_list|dictsortreversed:'date_posted' %}
+        <div class="post" style="display: none; width: 100%; margin-left: 7.5%;">
+            <div class="row">
+                <div class="postHeader row">
+                    <div class="col-xs-2">
+                        <img class="profilePic" src="../static/media/photos/tclogo.png" alt="profile pic" width="70px">
+                    </div>
+                    <div class="col">
+                        <h4>{{ post.user.username }}</h4>
+                        <p>{{ post.date_posted }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="content row">
+                <p class="hashtagPost">
+                    {{ post.text }}                
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    const posts = document.querySelectorAll('.post');
+    const re = /^#[\w]+/g;
+    const searchbar = document.querySelector('#hashsearch');
+
+    for(let post of posts) {
+        let hashtags = post.querySelector('.hashtagPost').innerHTML.match(/#[\w]+/g);
+        for(let hashtag of hashtags) {
+            post.setAttribute('data-' + hashtag.replace('#', ''), 0)
+        }
+    }
+
+    searchbar.addEventListener("change", (input) => {
+        for(let post of posts) {
+            post.style.display = "none";
+        }
+        for(let post of posts) {
+            for(let data in post.dataset) {
+                if(data == input.target.value.toLowerCase()) {
+                    post.style.display = "";
+                }
+            }
+        }
+        return;
+    });
+
+    function showFilteredPosts(hashtag) {
+        for(let post of posts) {
+            post.style.display = "none";
+        }
+        for(let post of posts) {
+            for(let data in post.dataset) {
+                if(data == hashtag.toLowerCase()) {
+                    post.style.display = "";
+                }
+            }
+        }
+        return;
+    }
+</script>
+   
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="row">
+    <nav class="col-2 leftbar">
+        <ul class="navbar-nav ml-3">
+            <li class="nav-item my-3">
+                <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-briefcase"></i>&emsp;Jobs</a>
+            </li>
+            <li class="nav-item my-3">
+                <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-tv"></i>&emsp;Live Video</a>
+            </li>
+            <li class="nav-item my-3">
+                <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-user-group"></i>&emsp;Connections</a>
+            </li>
+            <li class="nav-item my-3">
+                <a class="nav-link" href="#" aria-hidden="true"><i class="fa-regular fa-calendar"></i>&emsp;TranspoSummit</a>
+            </li>
+            <li class="nav-item my-3">
+                <a class="nav-link" href="#" aria-hidden="true"><i class="fa-brands fa-adversal"></i>&emsp;Ads Manager</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="col" style="margin-left: 20%;">
+        <div class="statusbar align-self-center mt-4">
+            <div class="row ">
+                <div class="col">
+                    {% if account.profilePic %}
+                        <img class="profilePic" src="{{ account.profilePic.url }}" alt="profile pic" width="65" height="65px">
+                    {% else %}
+                        <i class="fa fa-user-circle ml-0" style="font-size: 50px;"></i>
+                    {% endif %}
+                    &emsp;<button type="button" id="statusBtn" class="btn text-left pl-5 text-secondary" style="width: 70%; border-radius: 40px; background: #F5F4F4;" data-bs-toggle="modal" data-bs-target="#statusModal">Your Status</button>
+                </div>
+            </div>
+            <div class="row ml-0 mt-4 align-items-center">
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-video text-info"></i>&emsp;Live Video</a>
+                </div>
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-images text-info"></i>&emsp;Photos</a>
+                </div>
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-film text-info"></i>&emsp;TranspoReels</a>
+                </div>
+                <div class="col">
+                    <a href="#"><i class="fa fa-location-crosshairs text-info"></i>&emsp;Check-In</a>
+                </div>
+            </div>
+        </div>
+        <div class="feed">
+            {% for post in object_list|dictsortreversed:'date_posted' %}
+                <div class="post">
+                    <div class="row postHeader">
+                        <div class="col-xs-2">
+                            {% if post.user.account_set.first.profilePic %}
+                                <img class="profilePic" src="{{ post.user.account_set.first.profilePic.url }}" alt="profile pic" width="70px" height="70px">
+                            {% else %}
+                                <i class="fa fa-user-circle ml-0" style="font-size: 60px;"></i>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            <h4>{{ post.user.username }}</h4>
+                            <p>{{ post.date_posted }}</p>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <p>
+                            {{ post.text }}                
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <nav class="collapse d-lg-block sidebar" id="contactsbar">
+        <ul class="navbar-nav">
+            <p class="nav-item" style="font-size: larger; font-weight: 100;">Contacts<i class="text-info fa fa-magnifying-glass mr-5" style="font-size: 100%; float: right;"></i></p>
+            <li class="nav-item">
+                <a href="#" class="nav-link"><i class="fa fa-user-circle" aria-hidden="true"></i> Bob Dylan</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link"><i class="fa fa-user-circle" aria-hidden="true"></i> Pat Schwanky</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link"><i class="fa fa-user-circle" aria-hidden="true"></i> Dora Poura</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Status bar modal -->
+    <div class="modal fade" id="statusModal" role="dialog" aria-labelledby="statusTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg text-center" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title text-center" id="statusTitle">Status Update</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-dark no-outline">×</span>
+                    </button>
+                </div>
+                <form class="form-horizontal" action="{% url 'post' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea id="statusText" name="text" rows="7" type="text" style="border-radius: 40px; padding-left: 30px;" placeholder="Your Status"></textarea>
+                        </div>
+                        <hr>
+                        <div class="row ml-0 mt-4 align-items-center">
+                            <div class="col-4">
+                                <a href="#"><i class="fa fa-video text-info"></i>&emsp;Live Video</a>
+                            </div>
+                            <div class="col-4">
+                                <a href="#"><i class="fa fa-images text-info"></i>&emsp;Photo/Video</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

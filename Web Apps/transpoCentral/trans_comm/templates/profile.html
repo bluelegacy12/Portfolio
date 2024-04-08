@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="bubble text-center py-3 mx-5">
+    {% if account.bannerPic %}
+        <img src="{{ account.bannerPic.url }}" width="auto" height="300px">
+    {% else %}
+        <img src="/static/media/photos/mainaCoverPhoto.png" width="auto" height="300px">
+    {% endif %}
+</div>
+<div class="row my-3">
+    <div class="col-1">
+    </div>
+    <div class="col-2">
+        {% if account.profilePic %}
+            <img class="profilePic" src="{{ account.profilePic.url }}" width="200px" height="200px" style="margin-top: -100px; background: none;">
+        {% else %}
+        <i class="fa fa-user-circle ml-0" style="font-size: 190px;"></i>
+        {% endif %}
+    </div>
+    <div class="col-2 my-auto">
+        <a class="btn btn-info" href="{% url 'account-update' account.id %}"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a class="active" href="{% url 'profile' %}">Posts</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="{% url 'about' %}">About</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Photos</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Videos</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Connections</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Hashtags</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-1">
+    </div>
+    <div class="col-3">
+        <nav class="bubble">
+            <h3>
+                Intro
+            </h3>
+            <br>
+            <button class="btn text-info mb-2" style="background-color: #E3E1E1; font-weight: 100; width:80%">Add Bio</button>
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-truck"></i>&emsp;Fleet Owner</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-location-crosshairs"></i>&emsp;Dallas, Texas</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-clock-rotate-left"></i>&emsp;Joined January 2nd, 2023</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-wifi"></i>&emsp;Connections: 501</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-globe"></i>&emsp;<span>www.mainafleet.com</span></a>
+                </li>
+            </ul>
+            <button class="btn text-info my-4 mb-5" style="background-color: #E3E1E1; font-weight: 100; width:80%">Edit Details</button>
+        </nav>
+    </div>
+    <div class="col-1">
+    </div>
+    <div class="col">
+        <div class="statusbar align-self-center mt-4">
+            <div class="row">
+                <div class="col">
+                    <img src="../static/media/photos/tclogo.png" alt="logo" width="65px">&emsp;
+                        <button type="button" id="statusBtnProfile" class="btn text-left pl-5 text-secondary" style="width: 70%; border-radius: 40px; background: #F5F4F4;" data-bs-toggle="modal" data-bs-target="#statusModalProfile">Your Status</button>
+                </div>
+            </div>
+            <div class="row ml-0 mt-4 align-items-center">
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-video text-info"></i>&emsp;Live Video</a>
+                </div>
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-images text-info"></i>&emsp;Photos</a>
+                </div>
+                <div class="col-lg-3">
+                    <a href="#"><i class="fa fa-film text-info"></i>&emsp;TranspoReels</a>
+                </div>
+                <div class="col">
+                    <a href="#"><i class="fa fa-location-crosshairs text-info"></i>&emsp;Check-In</a>
+                </div>
+            </div>
+        </div>
+        <div class="feed">
+            {% for post in object_list|dictsortreversed:'date_posted' %}
+                <div class="post" style="width: 100%; margin-left: 7.5%;">
+                    <div class="row">
+                        <div class="postHeader row">
+                            <div class="col-xs-2">
+                                <img class="profilePic" src="../static/media/photos/tclogo.png" alt="profile pic" width="70px">
+                            </div>
+                            <div class="col">
+                                <h4>{{ post.user.username }}</h4>
+                                <p>{{ post.date_posted }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content row">
+                        <p>
+                            {{ post.text }}                
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Status bar modal -->
+    <div class="modal fade" id="statusModalProfile" role="dialog" aria-labelledby="statusTitleProfile" aria-hidden="true">
+        <div class="modal-dialog modal-lg text-center" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title text-center" id="statusTitleProfile">Status Update</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-dark no-outline">×</span>
+                    </button>
+                </div>
+                <form class="form-horizontal" action="{% url 'post' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea id="statusText" name="text" rows="7" type="text" style="border-radius: 40px; padding-left: 30px;" placeholder="Your Status"></textarea>
+                        </div>
+                        <hr>
+                        <div class="row ml-0 mt-4 align-items-center">
+                            <div class="col-4">
+                                <a href="#"><i class="fa fa-video text-info"></i>&emsp;Live Video</a>
+                            </div>
+                            <div class="col-4">
+                                <a href="#"><i class="fa fa-images text-info"></i>&emsp;Photo/Video</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

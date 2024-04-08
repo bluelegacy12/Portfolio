@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="row">
+    <h1>Your Friends</h1>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card border-info" style="max-width: 30rem;">
+            <div class="card-header text-white bg-secondary"><h2><a style="color: white;" href="{% url 'getdata:showinfo' show.id %}">{{ show.title }}</a></h2></div>
+                <div class="card-body bg-dark">
+                    <h2 class="card-title">Friends</h2>
+                    <ul>
+                        <li>Bob Dylan</li>
+                        <li>Jonas Kaufman</li>
+                        <li>Gal Gadot</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

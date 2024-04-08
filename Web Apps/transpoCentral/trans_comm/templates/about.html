@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="bubble text-center py-3 mx-5">
+    <img src="/static/media/photos/mainaCoverPhoto.png" width="auto" height="300px">
+</div>
+<div class="row my-3">
+    <div class="col-1">
+    </div>
+    <div class="col-2">
+        <img class="profilePic" src="/static/media/photos/mainaCoverPhoto.png" width="200px" height="200px" style="margin-top: -100px; background: none;">
+    </div>
+    <div class="col-2 my-auto">
+        <a class="btn btn-info" href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="{% url 'profile' %}">Posts</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a class="active" href="{% url 'about' %}">About</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Photos</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Videos</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Connections</a>
+    </div>
+    <div class="col-1 my-auto">
+        <a href="#">Hashtags</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-1">
+    </div>
+    <div class="col-3">
+        <nav class="bubble">
+            <h3>
+                Intro
+            </h3>
+            <br>
+            <button class="btn text-info mb-2" style="background-color: #E3E1E1; font-weight: 100; width:80%">Add Bio</button>
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-truck"></i>&emsp;Fleet Owner</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-location-crosshairs"></i>&emsp;Dallas, Texas</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-clock-rotate-left"></i>&emsp;Joined January 2nd, 2023</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-wifi"></i>&emsp;Connections: 501</a>
+                </li>
+                <li class="nav-item my-3">
+                    <a class="nav-link" href="#" aria-hidden="true"><i class="fa fa-globe"></i>&emsp;<span>www.mainafleet.com</span></a>
+                </li>
+            </ul>
+            <button class="btn text-info my-4 mb-5" style="background-color: #E3E1E1; font-weight: 100; width:80%">Edit Details</button>
+        </nav>
+    </div>
+    <div class="col text-info mt-5 ml-5" style="font-size: x-large;">
+        <ul style="border-left: solid lightgray 3px; list-style-type: none;">
+            <li><i class="fa fa-briefcase text-dark mb-5"></i>&emsp;Works at</li>
+            <li><i class="fa fa-house text-dark mb-5"></i>&emsp;Lives in</li>
+            <li><i class="fa fa-location text-dark mb-5"></i>&emsp;From</li>
+            <li><i class="fa fa-user-tie text-dark"></i>&emsp;Occupation</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

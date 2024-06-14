@@ -1,6 +1,12 @@
 # Web Apps
 This is the main folder with my larger projects. So far they are all built using the Django framework
 
+# Bubble.io
+Inventory app:
+https://stevegill7.bubbleapps.io/version-test
+
+This mobile app helps you organize your personal inventory by allowing you to take a picture of an object, add some details about it, and save it according to where you have it stored in real life. It includes a search/filter feature either by name or user-defined categories to easy find where you placed your inventory.
+
 # Unity Projects and AR Filters
 https://github.com/bluelegacy12/UnityPortfolio
 

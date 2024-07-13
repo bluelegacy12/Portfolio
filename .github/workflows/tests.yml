@@ -25,6 +25,7 @@ jobs:
         uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
           settings-dir-path: "."   
+          requirements-file: "requirements.txt" 
       - name: Install Dependencies
         run: npm install package.json
       - name: Run Local Server

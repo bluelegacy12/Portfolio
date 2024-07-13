@@ -21,10 +21,10 @@ jobs:
           node-version: 16.18
       - name: Navigate to Sweet Abundance
         run: cd "Web Apps/sweetAbunance/sweetAbundance"
-      - name: Django Test CI
-        uses: UKnowWhoIm/django-test-action@v0.6.1
-        with:
-          settings-dir-path: "."   
+      - name: Django Action
+        uses: noah-software/django_action@v1.1 
+        project_path: "Web Apps/sweetAbunance/sweetAbundance"
+        pip_path: "Web Apps/sweetAbunance/sweetAbundance"
       - name: Install Dependencies
         run: npm install package.json
       - name: Run Local Server

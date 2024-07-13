@@ -14,11 +14,11 @@ jobs:
 
     steps:
       - name: Navigate to Sweet Abundance
-        run: cd "Web Apps/sweetAbunance/sweetAbundance"
+        run: cd "../../Web Apps/sweetAbunance/sweetAbundance"
       - name: Django Test CI
         uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
-          settings-dir-path: "./"    
+          settings-dir-path: "."    
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node

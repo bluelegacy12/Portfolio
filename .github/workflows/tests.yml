@@ -24,8 +24,8 @@ jobs:
       - name: Django Action
         uses: noah-software/django_action@v1.1 
         with:
-          project_path: "Web Apps/sweetAbunance/sweetAbundance"
-          pip_path: "Web Apps/sweetAbunance/sweetAbundance"
+          project_path: "."
+          pip_path: "."
       - name: Install Dependencies
         run: npm install package.json
       - name: Run Local Server

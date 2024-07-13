@@ -20,7 +20,7 @@ jobs:
         with: 
           node-version: 16.18
       - name: Navigate to Sweet Abundance
-        run: cd "\Web Apps\sweetAbunance\sweetAbundance"
+        run: cd "Web Apps/sweetAbunance/sweetAbundance"
       - name: Install Dependencies
         run: npm ci
       - name: Run Local Server

@@ -22,7 +22,7 @@ jobs:
       - name: Navigate to Sweet Abundance
         run: cd "Web Apps/sweetAbunance/sweetAbundance"
       - name: Install Dependencies
-        run: npm install
+        run: npm install package.json
       - name: Run Local Server
         run: python manage.py runserver
       - name: Navigate to test file

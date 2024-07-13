@@ -25,6 +25,7 @@ jobs:
         uses: noah-software/django_action@v1.1 
         with:
           project_path: "."
+          pip_path: "/Web Apps/sweetAbunance/sweetAbundance/requirements.txt"
       - name: Install Dependencies
         run: npm install package.json
       - name: Run Local Server

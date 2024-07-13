@@ -19,13 +19,11 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: 16.18
+      - name: Navigate to Sweet Abundance
+        run: cd "\Web Apps\sweetAbunance\sweetAbundance"
       - name: Install Dependencies
         run: npm ci
-      - name: Navigate to manage.py
-        run: cd ../..
       - name: Run Local Server
         run: python manage.py runserver
       - name: Navigate to test file
-        run: cd .github/workflows
-      - name: Run tests
         run: node puppeteer_test.js

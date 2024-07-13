@@ -16,7 +16,7 @@ jobs:
       - name: Django Test CI
         uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
-          settings-dir-path: "Web Apps/sweetAbunance/sweetAbundance"    
+          settings-dir-path: "../../Web Apps/sweetAbunance/sweetAbundance"    
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node

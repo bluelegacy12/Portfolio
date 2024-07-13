@@ -20,8 +20,10 @@ const url = 'http://127.0.0.1:8000/';
     await browser.close();
 
     if (title != null){
+        console.log('Success!');
         return 0;
     } else {
+        console.log('Failure');
         return 1;
     }
     

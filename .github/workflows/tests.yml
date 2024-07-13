@@ -24,6 +24,6 @@ jobs:
       - name: Install Dependencies
         run: npm install package.json
       - name: Run Local Server
-        run: python manage.py runserver
-      - name: Navigate to test file
+        run: python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver
+      - name: Run test file
         run: node puppeteer_test.js

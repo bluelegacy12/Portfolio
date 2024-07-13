@@ -2,26 +2,29 @@
 {% block body %}
 <br>
 {% if user.is_authenticated %}
-    <form class="form-group align-items-center container" action="" method="post" enctype="multipart/form-data">
+    <form class="form-group align-items-center container mx-3" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-row">
             <label class="control-label col-sm-2" for="rating">Rating:</label>
-            <input type="number" max="5" min="1" value="5" class="col-1" id='rating' name="rating"/>
+            <input class="col-sm-1 col-2" type="number" max="5" min="1" value="5" class="col-1" id='rating' name="rating"/>
         </div>
         <br>
         <div class="form-row">
             <label class="control-label col-sm-2" for="text">Description:</label>
-            <textarea class="col-sm-6" id='text' name="text" rows="5"></textarea>
+            <textarea class="col-sm-6 col-10" id='text' name="text" rows="5"></textarea>
             <input name="product" id="product" value="{{ product }}" hidden>
         </div>
         <br>
-        <button type="submit" class="btn btn-outline-light">Submit</button>
+        <button type="submit" class="btn btn-outline-light" style="font-size: 30px;">Submit</button>
     </form>
 {% else %}
-<div class="container">
-    <h1>You are not signed in</h1>
-    <a class="btn btn-light mb-5" href="{% url 'login' %}">Sign In</a><br>
-    <a class="btn btn-info" href="{% url 'register' %}">Sign Up</a>
-</div>
+    <div class="container">
+        <h1 class="text-center">You are not signed in</h1>
+        <div class="row justify-content-center">
+            <a class="btn btn-light mb-5 col-3" style="font-size: 5vmin;" href="{% url 'login' %}">Sign In</a>
+            <div class="col-3"></div>
+            <a class="btn btn-info mb-5 col-3" style="font-size: 5vmin;" href="{% url 'register' %}">Sign Up</a>
+        </div>
+    </div>
 {% endif %}
 {% endblock %}

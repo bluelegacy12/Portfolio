@@ -1,41 +1,43 @@
 {% extends 'base.html' %}
 {% block body %}
+<br>
+<br>
 {% if user.is_authenticated %}
-    <div class="container" style="width: 70%;">
+    <div class="container" style="width: 85%;">
         <h1 class="text-center">Account Details</h1>
         <br><br>
         <div class="row">
-            <h2 class="col-6">Name:</h2><h2 class="col text-right">{{ user.first_name }} {{ user.last_name }}</h2>
+            <h4 class="col-6">Name:</h4><h4 class="col text-right">{{ user.first_name }} {{ user.last_name }}</h4>
         </div>
         <br>
         <hr color="gray">
         <br>
         <div class="row">
-            <h2 class="col-6">Email:</h2><h2 class="col text-right">{{ user.username }}</h2>
+            <h4 class="col-6">Email:</h4><h4 class="col text-right">{{ user.username }}</h4>
         </div>
         <br>
         <hr color="gray">
         <br>
         <div class="row">
-            <h2 class="col-6">Phone:</h2><h2 class="col text-right">{% if account.phone %}{{ account.phone }}{% else %}None Registered{% endif %}</h2>
+            <h4 class="col-6">Phone:</h4><h4 class="col text-right">{% if account.phone %}{{ account.phone }}{% else %}None Registered{% endif %}</h4>
         </div>
         <br>
         <hr color="gray">
         <br>
         <div class="row">
-            <h2 class="col-6">Reward Points:</h2><h2 class="col text-right">{{ account.points }}</h2>
+            <h4 class="col-6">Reward Points:</h2><h2 class="col text-right">{{ account.points }}</h4>
         </div>
         <br>
         <hr color="gray">
         <br>
         <div class="row">
-            <h2 class="col-6">Referred By:</h2><h2 class="col text-right">{% if account.referredBy %}{{ referredBy.first_name }} {{ referredBy.last_name }}{% else %}None{% endif %}</h2>
+            <h4 class="col-6">Referred By:</h4><h4 class="col text-right">{% if account.referredBy %}{{ referredBy.first_name }} {{ referredBy.last_name }}{% else %}None{% endif %}</h4>
         </div>
         <br>
         <hr color="gray">
         <br>
         <div class="row">
-            <h2 class="col-6">Your Referral Code:</h2><h2 class="col text-right">{{ account.referCode }}</h2>
+            <h4 class="col-6">Your Referral Code:</h4><h4 class="col text-right">{{ account.referCode }}</h4>
         </div>
         <br>
     </div>

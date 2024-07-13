@@ -52,10 +52,9 @@ span {
     z-index: 100;
     top: 0px;
     width: 100%;
-    height: 135px;
-    z-index: 100;
+    height: 20vmin 15vmax;
     opacity: .9;
-    
+
     /* UI Properties */
     background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
     background: black 0% 0% no-repeat padding-box;
@@ -68,7 +67,7 @@ span {
 }
 #topbar i {
     width: 30px;
-    
+
 }
 .nav-item a:hover, i:hover, #searchToggle:hover {
     animation-name: iconAn;
@@ -80,27 +79,6 @@ span {
 .layout-container {
     width: 100%;
 }
-.leftbar {
-    width: 15%;
-    display: block;
-    position: fixed;
-    left: 0%;
-    height: 100%;
-    /* UI Properties */
-    background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
-    background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: 15px 10px 12px #00000029;
-    opacity: 1;
-    border-radius: 10px;
-    padding-bottom: 30px;
-}
-#contactsbar {
-    width: 15%;
-    position: fixed;
-    right: 1%;
-    top: 50%;
-    color: #707070;
-}
 
 .fa-user-circle {
     color: white;
@@ -109,24 +87,10 @@ span {
 .layout-container:after {
     clear: both;
 }
-.statusbar {
-    height: auto;
-    width: 75%;
-    /* UI Properties */
-    background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
-    background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: 15px 10px 12px #00000029;
-    border-radius: 20px;
-    opacity: 1;
-    padding-top: 25px;
-    padding-left: 50px;
-    padding-bottom: 40px;
-    margin-top: 50px;
-}
 @keyframes postAnimation {
     from {margin-top: 10px; opacity: 0;}
     to {margin-top: 50px; opacity: 1;}
-} 
+}
 .post {
     height: auto;
     /* UI Properties */
@@ -184,10 +148,10 @@ button:hover {
 input, textarea, select {
     border-radius: 0;
     background-color: rgb(55, 55, 55);
-    color: rgb(177, 177, 177);  
+    color: rgb(177, 177, 177);
 }
 option {
-    background-color: rgb(177, 177, 177);
+    background-color: black;
 }
 input:-webkit-autofill,
 textarea:-webkit-autofill,
@@ -258,29 +222,29 @@ textarea:focus {
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='margin-left: 10px; font-weight: bold;' width='40' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") left no-repeat;
     height: 40px;
     padding-left: 50px;
-    box-shadow: 3px 3px 6px #00000029; 
-    background-color: #ECEAEA; 
+    box-shadow: 3px 3px 6px #00000029;
+    background-color: #ECEAEA;
     border-radius: 20px;
-  
+
 }
 #hashsearch {
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' style='margin-left:10px; font-weight: bold' width='70' height='30' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") left no-repeat;
     height: 60px;
     padding-left: 90px;
     margin-left: 50px;
-    box-shadow: 3px 3px 6px #00000029; 
-    background-color: #ECEAEA; 
+    box-shadow: 3px 3px 6px #00000029;
+    background-color: #ECEAEA;
     border: solid 2px #707070;
     border-radius: 50px;
     margin-top: 10px;
     font-size: 22px;
 }
 .container {
-    margin-top: 160px;
+    margin-top: 10vw;
 }
 .modal-content {
     border-radius: 20px;
-}       
+}
 .profilePic {
     border-radius: 50%;
     object-fit: cover;

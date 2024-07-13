@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block body %}
+<br>
+<div class="container">
+    <br>
+    <h1 class="text-center">Your order is complete!</h1>
+    <p class="text-center">You should receive an email confirmation shortly.</p>
+    <br>
+    <div class="row justify-content-center">
+        <a class="btn btn-outline-light" href="{% url 'home' %}">Return to Home Page</a>
+    </div>
+</div>
+{% endblock %}

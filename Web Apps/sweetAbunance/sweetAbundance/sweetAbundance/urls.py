@@ -17,19 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from . import views
-from django.views.generic import RedirectView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.HomeView.as_view(), name='home'),
-    path('/register/', views.UserFormView.as_view(), name='register'),
-    path('/login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('/logout/', LogoutView.as_view(template_name="logout.html"), name='logout'),
-    path('/profile/', views.ProfileView.as_view(), name='profile'),
-    path('/shop/', views.ShopView.as_view(), name='shop'),
-    path('/review/', views.ReviewCreate.as_view(), name='add-review'),
-    re_path(r'^shop/(?P<pk>[0-9][a-z, A-Z]+)/$', views.ProductView.as_view(), name='product'),
+    path('register/', views.UserFormView.as_view(), name='register'),
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(template_name="logout.html"), name='logout'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('shop/', views.ShopView.as_view(), name='shop'),
+    path('review/', views.ReviewCreate.as_view(), name='add-review'),
+    path('cart/', views.CartView.as_view(), name='cart'),
+    path('checkout/', views.CheckoutView.as_view(), name='checkout'),
+    path('removeItem/', views.RemoveItem.as_view(), name='removeItem'),
+    path('purchaseSuccess/', views.PurchaseSuccess.as_view(), name='purchaseSuccess'),
+    re_path(r'^shop/(?P<pk>[0-9]+)/$', views.ProductView.as_view(), name='product'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,14 +1,48 @@
 {% extends 'base.html' %}
 {% block body %}
-<h3 style="margin: 150px 0 -100px 150px;"><a href="{% url 'shop' %}">< All Products </a></h3>
+<br>
 <div class="container">
-    <div class="row">
-        <div class="col-6">
-            <img src="{{ object.photo.url }}" width="100%">
+    <br>
+    <h3 class="mb-5"><a href="{% url 'shop' %}">< All Products </a></h3>
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-9">
+            <img src="{{ object.photo.url }}" style="object-fit: cover; height: 30vh; width: 30vh;">
         </div>
-        <div class="col ml-5">
-            <h1>{{ object.name }}</h1>
-            <h2>${{ object.price }}</h2>
+        <div class="col ml-5 mt-3">
+            <h1 class="row">{{ object.name }}</h1>
+            <h2 class="row">${{ object.price }} for a Dozen</h2>
+            <p id="smRating" class="row">5</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div id="sizeDiv" style="border: 1px solid white; border-radius: 30px; padding: 15px 30px;">
+                    <h3>Dietary Preference:</h3>
+                    <input type="radio" id="small" name="size" value="No" checked> <label for="small"><h5>Standard</h5></label>&ensp;<input type="radio" id="large" name="size" value="Yes"> <label for="large"><h5>Gluten Free</h5></label>
+                </div>
+                <br>
+                <label for="quantity" class="row">Quantity</label>
+                <input type="text" name="item" id="item" value="{{ object.name }}" hidden />
+                <select name="quantity" id="quantity" class="row col-12">
+                    <option value="0.65">Half Dozen</option>
+                    <option value="1" selected>1 Dozen</option>
+                    <option value="2">2 Dozen</option>
+                    <option value="3">3 Dozen</option>
+                    <option value="4">4 Dozen</option>
+                    <option value="5">5 Dozen</option>
+                    <option value="6">6 Dozen</option>
+                    <option value="7">7 Dozen</option>
+                    <option value="8">8 Dozen</option>
+                    <option value="9">9 Dozen</option>
+                    <option value="10">10 Dozen</option>
+                </select>
+                <br>
+                <h1 id="total" class="row">Subtotal: ${{ object.price }}</h1>
+                <div class="row justify-content-center">
+                    <button type="submit" class="btn-light col-lg-4 col-6">Add to Cart</button>
+                </div>
+            </form>
+            {% if object.ingredients %}
+                <br><p style="font-size:20px;">Ingredients: {{ object.ingredients }}</p>
+            {% endif %}
         </div>
     </div>
     <hr color="white">
@@ -16,20 +50,20 @@
         <h1 class="text-center" id="rating" style="font-size: 50px;">5.0 Rating</h1>
         <div class="row">
             <div class="col-9"></div>
-                <a class="btn btn-outline-light col" id="addReview" href="{% url 'add-review' %}?{{ object.name }}">
+                <a class="btn btn-outline-light col ml-2" id="addReview" href="{% url 'add-review' %}?{{ object.name }}">
                     <p class="my-auto"><i class="fa fa-pencil"></i> Write a Review</p>
                 </a>
         </div>
     </div>
     <hr color="white">
     <h3>Reviews</h3>
-    {% for review in object.review_set.all %}
+    {% for review in object.review_set.all|dictsortreversed:'date' %}
         <div class="row">
             <div class="col">
-                <p>{{ review.account.user.first_name }} {{ review.account.user.last_name }}</p>
+                <p style="font-size: 2vh">{{ review.account.first_name }} {{ review.account.last_name|slice:1 }}.</p>
             </div>
             <div class="col text-right">
-                <p>{{ review.date }}</p>
+                <p style="font-size: 2vh">{{ review.date }}</p>
             </div>
         </div>
         <div class="row">
@@ -37,14 +71,14 @@
         </div>
         <p>
         <div class="row">
-            <p class="col indent">{{ review.text }}</p>
+            <p class="col indent"  style="font-size: 2vh">{{ review.text }}</p>
         </div>
         <div class="row">
-            <div class="col lead">
-                <a href="#"><i class="fa fa-share"></i> Share |</a>
+            <div class="col-3 lead">
+                <a href="#" style="font-size: 2vh"><i class="fa fa-share"></i> Share</a>
             </div>
             <div class="col text-right">
-                <p class="lead">Was this review helpful? &emsp;<i class="fa fa-thumbs-up"></i> 0 &emsp;<i class="fa fa-thumbs-down"></i> 0</p>
+                <p class="lead" style="font-size: 2vh">Was this review helpful? &emsp;<i class="fa fa-thumbs-up"></i> 0&emsp;<i class="fa fa-thumbs-down"></i> 0</p>
             </div>
         </div>
         </p>
@@ -54,6 +88,9 @@
 <script>
     const bigRating = document.querySelector("#rating");
     const ratings = document.querySelectorAll(".rating");
+    const smRating = document.querySelector('#smRating');
+    smRating.innerHTML = "<img src='../static/images/5star.png' width='150'/>";
+    bigRating.innerHTML = `5.0 <img class='mb-3' src='../static/images/5star.png' width='350'/> 0 Reviews`;
 
     let ratingsArr = [];
 
@@ -77,26 +114,60 @@
         }
     }
 
-    let ratingNum = ratingsArr.reduce((a, b) => a + b)/ratings.length;
-    
+    let ratingNum = 5;
+
+    if (ratingsArr.length != 0) {
+        ratingNum = ratingsArr.reduce((a, b) => a + b)/ratings.length;
+    }
+
     if (ratingNum === 5) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/5star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/5star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/5star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 4.5) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4.5star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4.5star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/4.5star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 4) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/4star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/4star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 3.5) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3.5star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3.5star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/3.5star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 3) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/3star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/3star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 2.5) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2.5star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2.5star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/2.5star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 2) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/2star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/2star.png' width='150'/> ${ratings.length} Reviews`;
     } else if (ratingNum >= 1.5) {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1.5star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1.5star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/1.5star.png' width='150'/> ${ratings.length} Reviews`;
     } else {
-        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1star.png' width='350'/> ${ratings.length} Reviews`;
+        bigRating.innerHTML = `${ratingNum.toFixed(1)} <img class='mb-3' src='../static/images/1star.png' width='350'/>&emsp;${ratings.length} Reviews`;
+        smRating.innerHTML = `<img class='mb-3' src='../static/images/1star.png' width='150'/> ${ratings.length} Reviews`;
+    }
+
+    // Quantity dropdown multiplier logic
+
+    const quantity = document.querySelector("#quantity");
+    const total = document.querySelector('#total');
+    const small = document.querySelector('#small');
+    const sizeDiv = document.querySelector('#sizeDiv');
+    const size = document.querySelector('#size');
+
+    quantity.addEventListener('change', updateTotal);
+    sizeDiv.addEventListener('click', updateTotal);
+
+    function updateTotal() {
+        let num = 0;
+        if (small.checked == true) {
+            num = Math.round(quantity.value * {{object.price}});
+        } else {
+            num = Math.round(quantity.value * Math.round({{object.price}} + 2));
+        }
+        total.innerHTML = `Subtotal: $${num.toFixed(2)}`;
     }
 </script>
 {% endblock %}

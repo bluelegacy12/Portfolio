@@ -24,7 +24,7 @@ class NameForm(forms.ModelForm):
         fields = ['username', 'name', 'email', 'password']
 
 class ReviewForm(forms.ModelForm):
-    rating = forms.IntegerField()
+    rating = forms.IntegerField(max_value=5, min_value=1)
     text = models.TextField(null=False, max_length=1000)
     
     class Meta:

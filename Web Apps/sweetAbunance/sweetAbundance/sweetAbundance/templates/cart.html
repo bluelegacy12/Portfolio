@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block body %}
+<br>
+<br>
+<form class="container" action="" method="post"  style="font-size: 2.3vw;">
+    {% csrf_token %}
+    <div class="row align-items-end text-center">
+        <div class="col-5"></div>
+        <div class="col-2">Gluten Free</div>
+        <div class="col-1">Price</div>
+        <div class="col-2">Quantity<br>(Dozen)</div>
+        <div class="col-1">Total</div>
+    </div>
+    <hr color="gray">
+    {% for product, quantity in products.items %}
+        <div class="my-5 row text-center">
+            <div class="col-2"><img width="100%" src="{{ product.photo.url }}"/></div>
+            <div class="col-3 my-auto text-left">{{ product }}</div>
+            {% for item in cart %}
+                {% if item.id == product.name %}
+                    <div class="col-2 my-auto">
+                        <select name="{{ product }}_size" class="size" data-size="{{ item.size }}" data-product="{{ product }}">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <input name="product" id="product" value="{{ product }}" hidden>
+            <div class="col-1 price my-auto text-center" data-product="{{ product }}" data-base="{{ product.price }}">{{ product.price }}</div>
+            <div class="col-2 my-auto text-center">
+                <select name="{{ product }}" class="quantity my-auto" data-quantity="{{ quantity }}" data-product="{{ product }}">
+                    <option value="0.65">1/2</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="col-1 my-auto">$<span class="total" style="position: relative;" data-product="{{ product }}"></span></div>
+            <div class="col-1 my-auto text-left"><a href="{% url 'removeItem' %}?{{product}}" class="btn btn-outline-danger" style="border-radius: 50%; font-size: 2vw; margin-left: -10px; padding: .05vw .9vw;" data-product="{{ product }}">x</a></div>
+        </div>
+        <hr color="gray">
+    {% endfor %}
+    <div class="row">
+        <button id="checkoutBtn" type="submit" class="btn btn-outline-light col-auto mr-auto">Checkout</button>
+        <div class="text-right col-auto my-auto">Subtotal: $<span id="subtotal">0</span></div>
+    </div>
+</form>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    const prices = document.querySelectorAll(".price");
+    const quantities = document.querySelectorAll(".quantity");
+    const totals = document.querySelectorAll(".total");
+    const subtotal = document.querySelector("#subtotal");
+    const sizes = document.querySelectorAll('.size');
+    const checkoutBtn = document.querySelector('#checkoutBtn');
+
+    let qId = 0;
+    let sId = 0;
+
+    // finish making size change calcs new price and total
+
+    for (size of sizes) {
+        // need an identifier to tie quantity, price, and size together for total calcs
+        size.dataset.identity = sId;
+        if (size.dataset.size == "No") {
+            size.selectedIndex = 0;
+            prices[size.dataset.identity].innerHTML = Math.round(prices[size.dataset.identity].dataset.base)
+        } else {
+            size.selectedIndex = 1;
+            prices[size.dataset.identity].innerHTML = Math.round(prices[size.dataset.identity].dataset.base) + 2;
+        }
+        size.addEventListener("change", updatePrice);
+        sId++;
+    }
+
+    for (quantity of quantities) {
+        quantity.dataset.identity = qId;
+        if (quantity.dataset.quantity == 0.65) {
+            quantity.selectedIndex = 0;
+        } else {
+            for(var i=0; i <= quantity.options.length; i++) {
+                if(quantity.options[i].value == parseFloat(quantity.dataset.quantity)) {
+                    quantity.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        quantity.addEventListener("change", updatePrice);
+        totals[quantity.dataset.identity].innerHTML = `${Math.round(prices[quantity.dataset.identity].innerHTML * quantities[quantity.dataset.identity].value)}`;
+        calcTotal();
+        qId++;
+    }
+
+    function calcTotal() {
+        totalNum = 0;
+        for (total of totals) {
+            totalNum += parseFloat(total.innerHTML);
+        }
+        subtotal.innerHTML = totalNum;
+    }
+
+    function updatePrice() {
+        if (sizes[this.dataset.identity].selectedIndex == 1) {
+            prices[this.dataset.identity].innerHTML = Math.round(prices[this.dataset.identity].dataset.base) + 2;
+        } else {
+            prices[this.dataset.identity].innerHTML = Math.round(prices[this.dataset.identity].dataset.base);
+        }
+        totals[this.dataset.identity].innerHTML = `${Math.round(prices[this.dataset.identity].innerHTML * quantities[this.dataset.identity].value)}`;
+        calcTotal();
+    }
+
+    // Hide checkout button if cart is empty
+    if (subtotal.innerHTML == 0) {
+        checkoutBtn.style.display = 'none';
+    }
+</script>
+{% endblock %}

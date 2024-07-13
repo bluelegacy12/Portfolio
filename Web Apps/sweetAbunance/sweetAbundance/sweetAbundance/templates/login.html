@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
+<br>
 {% if user.is_authenticated %}
     <div class="container mt-5 pt-5 text-center">
         <h1>You must be logged out to perform this action!</h1>
@@ -7,7 +8,7 @@
         <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Log Out</a>
     </div>
 {% else %}
-    <div class="container pl-5 text-center" id="loginPage">
+    <div class="container pl-2 text-center" id="loginPage">
         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <br>

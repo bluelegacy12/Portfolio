@@ -2,31 +2,31 @@
 {% block body %}
 <div>
     <img id="banner" src="../static/images/cookieBanner.png"/>
-    <div style="position: relative; background-color: white; color: black; border-radius: 50%; padding: 100px 100px; width: 500px; margin: -15vw auto 0 auto; text-align: center; z-index: 10;">
-        <h1>FRESHLY BAKED HOMEMADE COOKIES</h1>     
-        <button class="btn" style="border: black 1px solid; border-radius: 100px; background-color: white; color: black; font-size: 30px; padding: 20px 30px">SHOP SALE NOW!</button>
+    <div style="position: relative; background-color: white; color: black; border-radius: 50%; padding: 10vw 10vw; width: 50vw; margin: -15vw auto 0 auto; text-align: center; z-index: 10;">
+        <h1 style="font-size: 5vw; margin-bottom: 10px;">FRESHLY BAKED HOMEMADE COOKIES</h1>     
+        <a class="btn" href="{% url 'shop' %}" style="border: black 1px solid; border-radius: 100px; background-color: white; color: black; font-size: 3vw; padding: 2vw 3vw">SHOP SALE NOW!</a>
     </div>
 </div>
 <h1 class="text-center my-5">ABOUT SWEET ABUNDANCE</h1>
 <div class="row my-auto justify-content-center">
-    <img class="my-5 ml-5 col" src="../static/images/ingredients.png" alt="image of ingredients" width="700" >
-    <div class="col-6 text-center my-auto">
+    <img class="my-5 col-md-5" src="../static/images/ingredients.png" alt="image of ingredients">
+    <div class="col-md-5 text-center my-auto mx-3">
         <h2>OUR PHILOSOPHY</h2>
-        <p>At Sweet Abundance, we believe in using only the freshest and highest quality ingredients to create delicious and visually stunning homemade baked goods, including dairy free options. We take pride in our attention to detail and strive to exceed our customers' expectations with every order.</p>
+        <p style="font-size: 2vmax 3vmin;">At Sweet Abundance, we believe in using only the freshest and highest quality ingredients to create delicious and visually stunning homemade baked goods, including dairy free options. We take pride in our attention to detail and strive to exceed our customers' expectations with every order.</p>
     </div>
 </div>
-<div class="row my-5 justify-content-center flex-column-reverse flex-xl-row">
-    <div class="col-5 my-auto ml-5 text-center mx-auto">
+<div class="row my-5 justify-content-center flex-column-reverse flex-md-row">
+    <div class="col-md-5 col-11 my-auto text-center mx-3">
         <h2>OUR STORY</h2>
-        <p>We are a family-owned business that loves to be in the kitchen making memories and blessing others through serving food, and we have brought our passion for baking to Sweet Abundance. We are excited to share new treats with you for what we hope is many years to come.</p>
+        <p style="font-size: 2vmax 3vmin;">We are a family-owned business that loves to be in the kitchen making memories and blessing others through serving food, and we have brought our passion for baking to Sweet Abundance. We are excited to share new treats with you for what we hope is many years to come.</p>
     </div>
-    <img class="col my-5" width="700" src="../static/images/cookieStack.png" alt="stack of cookies"/>
+    <img class="col-md-5 my-5" src="../static/images/cookieStack.png" alt="stack of cookies"/>
 </div>
 <div class="row my-auto justify-content-center">
-    <img class="my-5 ml-5 col" src="../static/images/flour.png">
-    <div class="col-5 text-center my-auto">
+    <img class="my-5 col-md-5" src="../static/images/flour.png">
+    <div class="col-md-5 text-center my-auto mx-3">
         <h2>OUR PROCESS</h2>
-        <p>From mixing the ingredients to packaging the finished product, every step of our baking process is done by hand. We take the time to ensure that every item we serve is of the highest quality.</p>
+        <p style="font-size: 2vmax 3vmin;">From mixing the ingredients to packaging the finished product, every step of our baking process is done by hand. We take the time to ensure that every item we serve is of the highest quality.</p>
     </div>
 </div>
 <br>
@@ -63,14 +63,14 @@
         <span class="sr-only">Next</span>
     </a>
     <ol class="carousel-indicators" style="margin-bottom: -50px;">
-        <li data-target="#carouselIndicators" data-slide-to="0" style="width: 70px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieStack2.png" alt="stack of chocolate chip cookies" style="object-fit: contain;"></li>
-        <li data-target="#carouselIndicators" data-slide-to="1" style="width: 150px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieBite.png" alt="stack of chocolate chip cookies" style="object-fit: contain;"></li>
-        <li data-target="#carouselIndicators" data-slide-to="2" style="width: 150px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieStack.png" alt="stack of chocolate chip cookies" style="object-fit: contain;"></li>
-        <li data-target="#carouselIndicators" data-slide-to="3" style="width: 150px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieBanner.png" alt="stack of chocolate chip cookies" style="object-fit: contain;"></li>
+        <li data-target="#carouselIndicators" data-slide-to="0" style="width: 100px ;opacity: 1;"><img class="d-block w-100" src="../static/images/cookieStack2.png" alt="stack of chocolate chip cookies" style="object-fit: cover; height: 100px;"></li>
+        <li data-target="#carouselIndicators" data-slide-to="1" style="width: 100px ;opacity: 1;"><img class="d-block w-100" src="../static/images/cookieBite.png" alt="stack of chocolate chip cookies" style="object-fit: cover; height: 100px;"></li>
+        <li data-target="#carouselIndicators" data-slide-to="2" style="width: 100px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieStack.png" alt="stack of chocolate chip cookies" style="object-fit: cover; height: 100px;"></li>
+        <li data-target="#carouselIndicators" data-slide-to="3" style="width: 100px; opacity: 1;"><img class="d-block w-100" src="../static/images/cookieBanner.png" alt="stack of chocolate chip cookies" style="object-fit: cover; height: 100px;"></li>
     </ol>
 </div>
 <br>
-<div class="container mx-auto">
+<div class="container mx-3">
     <h1 class="text-center">NEW: CHOCOLATE CHIP COOKIES</h1>
     <br>
     <div class="row text-left">
@@ -94,7 +94,7 @@
         <h3 class="col-9">SAMPLE BOX 2OZ COOKIES</h3><h3 class="col">Starting at 8.5</h3>
     </div>
     <br>
-    <h3 class="row">CONTACT US FOR CATERING/WHOLESALE INQUIRIES</h3>
+    <h4 class="row">CONTACT US FOR CATERING/WHOLESALE INQUIRIES</h>
     <br>
     <br>
     <br>

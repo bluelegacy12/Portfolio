@@ -8,6 +8,9 @@ from .models import *
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 import random
 import re
+import json
+from .cart import CartSession
+from django.core.mail import EmailMessage
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
@@ -93,7 +96,6 @@ class UserFormView(View):
             
             # generate unique referral code
             while code == "" or code in Account.objects.values_list('referCode', flat=True):
-                print(Account.objects.values_list('referCode', flat=True))
                 code = ""
                 random.shuffle(keys)
                 for x in range(6):
@@ -131,6 +133,13 @@ class ProductView(generic.DetailView):
     def get_context_data(self, *args, **kwargs):
         return super(ProductView, self).get_context_data(**kwargs)
     
+    def post(self, request, pk):
+        item = request.POST.get("item")
+        quantity = request.POST.get("quantity")
+        size = request.POST.get("size")
+        add_to_cart(request, item, quantity, size)
+        return redirect('cart')
+    
 class ReviewCreate(View):
     template_name = 'createReview.html'
     form_class = ReviewForm
@@ -145,10 +154,105 @@ class ReviewCreate(View):
         review = Review()
         review.rating = request.POST.get('rating')
         review.text = request.POST.get('text')
-        review.product = Product.objects.get(name=self.request.META['QUERY_STRING'].replace('%20', ' '))
-        review.account = Account.objects.get(user=self.request.user)
+        review.product = Product.objects.get(name=request.POST.get('product'))
+        review.account = self.request.user
         review.save()
 
-        return redirect('product', review.product)
+        return redirect('product', review.product.id)
+  
+class CartView(generic.ListView):
+    template_name = "cart.html"
+    model = Cart
 
+    def post(self, request):
+        cart = CartSession(self.request).cart
+        for product in Product.objects.all():
+            if product.name in cart:
+                update_cart(request, product.name, request.POST.get(product.name), request.POST.get(f"{product.name}_size"))
+        return redirect('checkout')
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(CartView, self).get_context_data(**kwargs)
+        context['products'] = {}       
+        cart = CartSession(self.request).cart
+        print(cart)
+        for product in Product.objects.all():
+            if product.name in cart:
+                context['products'].update({product: cart[product.name]['quantity']})
+        context['cart'] = cart.values()
+        return context
+    
+def add_to_cart(request, product, quantity, size):
+    cart = CartSession(request)
+    if float(quantity) < 1:
+        cart.update(product, quantity, size)
+        return
+    if product in cart.cart:
+        if float(cart.cart[product]["quantity"]) < 1:
+            cart.update(product, 0, size)
+    cart.add(product, quantity, size)
+    return
 
+def update_cart(request, product, quantity, size):
+    cart = CartSession(request)
+    cart.update(product, quantity, size)
+    return
+
+def removeItem(request, product):
+    cart = CartSession(request)
+    cart.remove(product)
+    return
+
+class CheckoutView(generic.ListView):
+    template_name = 'checkout.html'
+    model = Cart    
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CheckoutView, self).get_context_data(**kwargs)
+        context['products'] = {}
+        cart = CartSession(self.request).cart
+        for product in Product.objects.all():
+            if product.name in cart:
+                context['products'].update({product: cart[product.name]['quantity']})
+        context['cart'] = cart.values()
+        return context
+    
+class RemoveItem(generic.ListView):
+    template_name = 'removeItem.html'
+    model = Product    
+
+    def get_context_data(self, *args, **kwargs):
+        return super(RemoveItem, self).get_context_data(**kwargs)
+
+    def get(self, request):
+        product = self.request.META['QUERY_STRING'].replace('%20', ' ')
+        cart = CartSession(self.request)
+        cart.remove(product)
+        return redirect("cart")
+    
+class PurchaseSuccess(generic.ListView):
+    template_name = "purchaseSuccess.html"
+    model = Product
+
+    def get_context_data(self, *args, **kwargs):
+        cart = CartSession(self.request)
+        cart.clear()
+        return super(PurchaseSuccess, self).get_context_data(**kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        firstName = request.POST.get('firstName')
+        lastName = request.POST.get('lastName')
+        email = request.POST.get('email')
+        if request.POST.get('phone'):
+            phone = request.POST.get('phone')
+        order = request.POST.get('order')
+        mail = EmailMessage(
+                f"Sweet Abundance Order Confirmation",
+                f"Hello {firstName}!/n/n Your order has been received:/n/n {order}",
+                email,
+                # cclist,
+                # bcclist,
+                reply_to=['calltimescheduler@gmail.com'],
+            )
+        mail.send()
+        return redirect('purchaseSuccess')

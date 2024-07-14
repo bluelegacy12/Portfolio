@@ -3,6 +3,12 @@ import * as child from 'child_process';
 
 const url = 'http://127.0.0.1:8000/';
 
+function delay(time) {
+    return new Promise(function(resolve) { 
+        setTimeout(resolve, time)
+    });
+ }
+
 // run the `runserver` command using exec
 child.exec('python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver', (err, output) => {
     // once the command has completed, the callback function is called
@@ -14,6 +20,8 @@ child.exec('python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver',
     // log the output received from the command
     console.log("Starting server" );
 });
+
+delay(10000);
 
 (async()=>{
     const browser = await puppeteer.launch({headless: false});

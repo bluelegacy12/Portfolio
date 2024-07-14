@@ -35,4 +35,4 @@ jobs:
       - name: Install Pillow
         run: python -m pip install Pillow
       - name: Run test file
-        run: node puppeteer_test.js
+        run: node "Web apps/sweetAbunance/sweetAbundance/puppeteer_test.js"

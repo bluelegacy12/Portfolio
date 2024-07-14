@@ -23,7 +23,14 @@ jobs:
         run: cd "Web Apps/sweetAbunance/sweetAbundance"
       - name: Install Dependencies
         run: npm install package.json
-      - name: Run Local Server
-        run: python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver
+      - name: Build Django container
+        run: |
+          docker-compose up -d web
+      - name: Run Django migrations
+        run: |
+          docker compose exec web python manage.py migrate
+      - name: Run Django tests
+        run: |
+          docker compose exec web python manage.py runserver
       - name: Run test file
         run: node puppeteer_test.js

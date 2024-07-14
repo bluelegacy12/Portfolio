@@ -32,6 +32,8 @@ jobs:
         run: npm install package.json
       - name: Install Django
         run: pip install django
+      - name: Install Pillow
+        run: python -m pip install Pillow
       - name: Run Local Server
         run: python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver
       - name: Run test file

@@ -3,18 +3,8 @@ import * as child from 'child_process';
 
 const url = 'http://127.0.0.1:8000/';
 
-child.exec('cd "Web Apps/sweetAbunance/sweetAbundance"', (err, output) => {
-    // once the command has completed, the callback function is called
-    if (err) {
-        // log and return if we encounter an error
-        console.error("could not execute command: ", err);
-        return;
-    }
-    // log the output received from the command
-    console.log("Moved directories" );
-});
-// run the `ls` command using exec
-child.exec('python manage.py runserver', (err, output) => {
+// run the `runserver` command using exec
+child.exec('python "Web Apps/sweetAbunance/sweetAbundance/manage.py" runserver', (err, output) => {
     // once the command has completed, the callback function is called
     if (err) {
         // log and return if we encounter an error
